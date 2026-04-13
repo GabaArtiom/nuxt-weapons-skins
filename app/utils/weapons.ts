@@ -1,0 +1,104 @@
+// Маппинг weapon_defindex → название оружия
+export const WEAPON_MAP: Record<number, string> = {
+  1: 'Desert Eagle',
+  2: 'Dual Berettas',
+  3: 'Five-SeveN',
+  4: 'Glock-18',
+  7: 'AK-47',
+  8: 'AUG',
+  9: 'AWP',
+  10: 'FAMAS',
+  11: 'G3SG1',
+  13: 'Galil AR',
+  14: 'M249',
+  16: 'M4A4',
+  17: 'MAC-10',
+  19: 'P90',
+  23: 'MP5-SD',
+  24: 'UMP-45',
+  25: 'XM1014',
+  26: 'PP-Bizon',
+  27: 'MAG-7',
+  28: 'Negev',
+  29: 'Sawed-Off',
+  30: 'Tec-9',
+  32: 'P2000',
+  33: 'MP7',
+  34: 'MP9',
+  35: 'Nova',
+  36: 'P250',
+  38: 'SCAR-20',
+  39: 'SG 553',
+  40: 'SSG 08',
+  60: 'M4A1-S',
+  61: 'USP-S',
+  63: 'CZ75-Auto',
+  64: 'R8 Revolver',
+}
+
+// Маппинг weapon_defindex → weapon_name для дефолтных изображений
+export const WEAPON_NAME_MAP: Record<number, string> = {
+  1: 'weapon_deagle',
+  2: 'weapon_elite',
+  3: 'weapon_fiveseven',
+  4: 'weapon_glock',
+  7: 'weapon_ak47',
+  8: 'weapon_aug',
+  9: 'weapon_awp',
+  10: 'weapon_famas',
+  11: 'weapon_g3sg1',
+  13: 'weapon_galilar',
+  14: 'weapon_m249',
+  16: 'weapon_m4a1',
+  17: 'weapon_mac10',
+  19: 'weapon_p90',
+  23: 'weapon_mp5sd',
+  24: 'weapon_ump45',
+  25: 'weapon_xm1014',
+  26: 'weapon_bizon',
+  27: 'weapon_mag7',
+  28: 'weapon_negev',
+  29: 'weapon_sawedoff',
+  30: 'weapon_tec9',
+  32: 'weapon_hkp2000',
+  33: 'weapon_mp7',
+  34: 'weapon_mp9',
+  35: 'weapon_nova',
+  36: 'weapon_p250',
+  38: 'weapon_scar20',
+  39: 'weapon_sg556',
+  40: 'weapon_ssg08',
+  60: 'weapon_m4a1_silencer',
+  61: 'weapon_usp_silencer',
+  63: 'weapon_cz75a',
+  64: 'weapon_revolver',
+}
+
+// Получить URL дефолтного изображения оружия
+export function getDefaultWeaponImage(defindex: number): string {
+  const weaponName = WEAPON_NAME_MAP[defindex]
+  if (!weaponName) return ''
+  return `https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/${weaponName}.png`
+}
+
+// Категории оружия
+export const WEAPON_CATEGORIES = {
+  pistols: [1, 2, 3, 4, 30, 32, 36, 61, 63, 64],
+  rifles: [7, 8, 10, 13, 16, 39, 60],
+  smgs: [17, 19, 23, 24, 26, 33, 34],
+  heavy: [14, 25, 28, 29, 35],
+  snipers: [9, 11, 38, 40],
+}
+
+export function getWeaponName(defindex: number): string {
+  return WEAPON_MAP[defindex] || 'Unknown'
+}
+
+export function getWeaponCategory(defindex: number): string {
+  for (const [category, weapons] of Object.entries(WEAPON_CATEGORIES)) {
+    if (weapons.includes(defindex)) {
+      return category
+    }
+  }
+  return 'other'
+}
