@@ -1,10 +1,9 @@
 <template>
   <div>
-    <NuxtLoadingIndicator />
+    <NuxtLoadingIndicator color="#60A5FA" />
     <NuxtPage />
   </div>
 </template>
 
-<script setup>
-// Ensure Nuxt UI styles are loaded
+<script setup lang="ts">
 </script>
