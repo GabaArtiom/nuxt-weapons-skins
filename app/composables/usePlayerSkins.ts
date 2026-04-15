@@ -6,11 +6,19 @@ export const usePlayerSkins = () => {
   const loading = useState('player-skins-loading', () => false)
 
   const fetchPlayerSkins = async () => {
-    if (!user.value.steamid) return
+    console.log('fetchPlayerSkins: user.steamid =', user.value.steamid)
+    if (!user.value.steamid) {
+      console.log('fetchPlayerSkins: no steamid, skipping')
+      return
+    }
     loading.value = true
     try {
+      console.log('fetchPlayerSkins: fetching from API...')
       const data = await $fetch<PlayerSkin[]>(`/api/skins/${user.value.steamid}`)
+      console.log('fetchPlayerSkins: API returned', data.length, 'skins')
       playerSkins.value = data
+    } catch (error) {
+      console.error('fetchPlayerSkins: error', error)
     } finally {
       loading.value = false
     }
