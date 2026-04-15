@@ -18,7 +18,7 @@
       </div>
     </header>
 
-    <main class="detail-main">
+    <main class="detail-main" :class="{ 'team-t': selectedTeam === 2 }">
       <div class="detail-head">
         <NuxtLink :to="backUrl" class="back-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
@@ -37,17 +37,24 @@
 
       <div class="current-skin-section">
         <div class="current-skin-wrapper">
+          <button @click="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
+            <div class="team-toggle__track">
+              <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
+              <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
+                <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
+              </div>
+              <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
+                <span class="team-toggle__badge team-toggle__badge--t">T</span>
+              </div>
+            </div>
+          </button>
+
           <div
             class="current-skin-block glass-card"
             :class="{ 'current-skin-block--clickable': currentSkin }"
+            :style="currentSkin ? { '--rarity-color': currentSkin.rarity.color } : {}"
             @click="currentSkin && openCurrentSkinModal()"
           >
-            <div class="current-skin-header">
-              <div class="current-skin-label">
-                <span class="current-skin-label__dot"></span>
-                Текущий скин
-              </div>
-            </div>
             <div v-if="currentSkin" class="current-skin-content">
               <div class="current-skin-image">
                 <img :src="currentSkin.image" :alt="currentSkin.name" />
@@ -83,24 +90,12 @@
               <span>Скин не выбран</span>
             </div>
           </div>
-          <button @click.stop="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
-            <div class="team-toggle__track">
-              <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
-              <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
-                <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
-              </div>
-              <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
-                <span class="team-toggle__badge team-toggle__badge--t">T</span>
-              </div>
-            </div>
-          </button>
         </div>
 
         <div class="detail-filter glass">
           <SkinFilter
             v-model:search="searchQuery"
             v-model:rarity="selectedRarity"
-            v-model:stattrak="showStatTrak"
           />
         </div>
       </div>
@@ -237,6 +232,8 @@ import { getWeaponName, getWeaponCategory, getWeaponIdFromSlug } from '~/utils/w
 import type { Skin } from '~/utils/skins'
 
 const route = useRoute()
+const { user } = useSteamAuth()
+
 const weaponId = computed(() => {
   const slug = route.params.slug as string
   return getWeaponIdFromSlug(slug)
@@ -246,11 +243,15 @@ const weaponName = computed(() => weaponId.value ? getWeaponName(weaponId.value)
 const { skins, loading, fetchSkins, getSkinsByWeapon } = useSkinsData()
 const { playerSkins, fetchPlayerSkins, saveSkin } = usePlayerSkins()
 
+// Redirect if not authenticated
+if (process.client && !user.value.authenticated) {
+  navigateTo('/')
+}
+
 const selectedTeam = ref<2 | 3>(3) // 3 = CT (default)
 
 const searchQuery = ref('')
 const selectedRarity = ref<string | null>(null)
-const showStatTrak = ref(false)
 
 const showModal = ref(false)
 const selectedSkin = ref<Skin | null>(null)
@@ -270,23 +271,36 @@ const backUrl = computed(() => {
 })
 
 onMounted(async () => {
+  console.log('onMounted: starting data fetch')
   await fetchSkins()
+  console.log('onMounted: skins fetched, now fetching player skins')
   await fetchPlayerSkins()
+  console.log('onMounted: player skins fetched, count:', playerSkins.value.length)
 })
 
 const currentPlayerSkin = computed(() => {
   if (!weaponId.value) return null
-  return playerSkins.value.find(
+  console.log('Looking for skin with:', { weaponId: weaponId.value, selectedTeam: selectedTeam.value })
+  console.log('Available playerSkins:', playerSkins.value.map(ps => ({
+    defindex: ps.weapon_defindex,
+    team: ps.weapon_team,
+    paintId: ps.weapon_paint_id
+  })))
+  const skin = playerSkins.value.find(
     ps => ps.weapon_defindex === weaponId.value && ps.weapon_team === selectedTeam.value
   )
+  console.log('Found skin:', skin)
+  return skin
 })
 
 const currentSkin = computed(() => {
   if (!currentPlayerSkin.value || !currentPlayerSkin.value.weapon_paint_id) return null
 
-  return weaponSkins.value.find(
+  const skin = weaponSkins.value.find(
     s => parseInt(s.paint_index) === currentPlayerSkin.value!.weapon_paint_id
   )
+  console.log('currentSkin:', { paintId: currentPlayerSkin.value.weapon_paint_id, skin, allWeaponSkins: weaponSkins.value.length })
+  return skin
 })
 
 const openCurrentSkinModal = () => {
@@ -322,10 +336,6 @@ const filteredSkins = computed(() => {
 
   if (selectedRarity.value) {
     result = result.filter(skin => skin.rarity.name === selectedRarity.value)
-  }
-
-  if (showStatTrak.value) {
-    result = result.filter(skin => skin.stattrak)
   }
 
   result = [...result].sort((a, b) => {
@@ -553,12 +563,15 @@ const saveSkinConfig = async (team: number) => {
   margin-bottom: 2.5rem;
 }
 
-.current-skin-block {
-  padding: 1.5rem;
-  border-radius: 18px;
+.current-skin-wrapper {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.current-skin-block {
+  padding: 2rem;
+  border-radius: 18px;
   transition: all 0.3s;
 }
 
@@ -571,83 +584,54 @@ const saveSkinConfig = async (team: number) => {
   box-shadow: 0 12px 32px -8px rgba(59, 130, 246, 0.3);
 }
 
-.current-skin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.current-skin-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-accent-glow);
-}
-
-.current-skin-label__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-accent-glow);
-  box-shadow: 0 0 8px var(--color-accent-glow);
-  animation: pulse-glow 2s ease-in-out infinite;
+.team-t .current-skin-block--clickable:hover {
+  box-shadow: 0 12px 32px -8px rgba(251, 191, 36, 0.3);
 }
 
 .current-skin-content {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
 }
 
 .current-skin-image {
-  width: 100px;
-  height: 100px;
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.05));
-  border: 2px solid rgba(96, 165, 250, 0.2);
-  border-radius: 12px;
-  padding: 0.5rem;
 }
 
 .current-skin-image img {
   max-width: 100%;
-  max-height: 100%;
+  height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3));
+  filter: drop-shadow(0 8px 24px var(--rarity-color, rgba(59, 130, 246, 0.4)));
 }
 
 .current-skin-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .current-skin-name {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: #fff;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .current-skin-rarity {
-  font-size: 0.8rem;
-  font-weight: 500;
-  opacity: 0.9;
-  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.95;
 }
 
 .current-skin-stats {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .current-skin-stat {

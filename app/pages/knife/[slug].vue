@@ -163,6 +163,8 @@ import type { Skin } from '~/utils/skins'
 import { getKnifeIdFromSlug } from '~/utils/knives'
 
 const route = useRoute()
+const { user } = useSteamAuth()
+
 const knifeId = computed(() => {
   const slug = route.params.slug as string
   return getKnifeIdFromSlug(slug)
@@ -170,6 +172,11 @@ const knifeId = computed(() => {
 
 const { skins, loading, fetchSkins } = useSkinsData()
 const { saveSkin } = usePlayerSkins()
+
+// Redirect if not authenticated
+if (process.client && !user.value.authenticated) {
+  navigateTo('/')
+}
 
 const searchQuery = ref('')
 const selectedRarity = ref<string | null>(null)

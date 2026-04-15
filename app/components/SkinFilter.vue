@@ -24,23 +24,12 @@
         {{ rarity.name }}
       </button>
     </div>
-
-    <label class="stattrak-toggle">
-      <input type="checkbox" v-model="showStatTrak" class="stattrak-toggle__input" />
-      <span class="stattrak-toggle__box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <path d="M5 13l4 4L19 7" />
-        </svg>
-      </span>
-      <span class="stattrak-toggle__label">Только StatTrak™</span>
-    </label>
   </div>
 </template>
 
 <script setup lang="ts">
 const searchQuery = defineModel<string>('search', { default: '' })
 const selectedRarity = defineModel<string | null>('rarity', { default: null })
-const showStatTrak = defineModel<boolean>('stattrak', { default: false })
 
 const rarities = [
   { name: 'Consumer Grade', color: '#b0c3d9' },
@@ -153,65 +142,5 @@ const rarities = [
   box-shadow:
     0 8px 24px color-mix(in srgb, var(--rarity-color) 35%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-/* StatTrak toggle */
-.stattrak-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  cursor: pointer;
-  width: fit-content;
-  user-select: none;
-}
-
-.stattrak-toggle__input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.stattrak-toggle__box {
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
-  background: rgba(15, 23, 42, 0.7);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: transparent;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.stattrak-toggle__box svg {
-  width: 14px;
-  height: 14px;
-  transform: scale(0);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.stattrak-toggle__input:checked + .stattrak-toggle__box {
-  background: linear-gradient(135deg, #3B82F6, #6366F1);
-  border-color: rgba(96, 165, 250, 0.7);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
-}
-
-.stattrak-toggle__input:checked + .stattrak-toggle__box svg {
-  transform: scale(1);
-}
-
-.stattrak-toggle__label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  transition: color 0.25s;
-}
-
-.stattrak-toggle:hover .stattrak-toggle__label {
-  color: #fff;
 }
 </style>
