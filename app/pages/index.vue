@@ -1,15 +1,22 @@
 <template>
-  <div class="min-h-screen tactical-grid-bg" style="background-color: var(--color-tactical-dark);">
-    <header class="relative" style="background-color: var(--color-tactical-surface); border-bottom: 2px solid var(--color-tactical-border);">
-      <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-50"></div>
-      </div>
-      <div class="container mx-auto px-4 py-6 relative z-10">
-        <div class="flex justify-between items-center mb-4">
-          <NuxtLink to="/" @click="activeTab = null" class="text-3xl font-bold tracking-wider slide-in-left relative group" style="color: var(--color-accent-primary); text-transform: uppercase; letter-spacing: 0.15em;">
-            <span class="relative z-10">CS2 WeaponPaints</span>
-            <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-500 opacity-0 group-hover:opacity-20 blur-xl transition-opacity"></div>
+  <div class="min-h-screen tactical-grid-bg">
+    <!-- ====================================== -->
+    <!-- STICKY GLASS NAVBAR                    -->
+    <!-- ====================================== -->
+    <header class="site-nav" :class="{ 'site-nav--scrolled': scrolled }">
+      <div class="site-nav__inner">
+        <div class="site-nav__row">
+          <NuxtLink to="/" @click="activeTab = null" class="brand slide-in-left">
+            <div class="brand__mark">
+              <div class="brand__mark-inner">CS</div>
+              <div class="brand__mark-glow"></div>
+            </div>
+            <div class="brand__text">
+              <span class="brand__title gradient-text-accent">WeaponPaints</span>
+              <span class="brand__sub">Premium Skin Arsenal · 2026</span>
+            </div>
           </NuxtLink>
+
           <ClientOnly>
             <div class="slide-in-right">
               <SteamLoginBtn />
@@ -17,289 +24,307 @@
           </ClientOnly>
         </div>
 
-        <!-- Navigation Tabs -->
-        <nav class="relative flex gap-2 overflow-visible pb-2 px-1" style="scrollbar-width: thin;">
-          <button @click="setActiveTab('knives')" :class="['nav-tab', { 'nav-tab-active': activeTab === 'knives' }]">
-            <span class="nav-tab-icon">🔪</span>
-            <span class="nav-tab-text">Ножи</span>
+        <nav class="nav-tabs">
+          <button @click="setActiveTab('knives')" :class="['nav-tab', { 'nav-tab--active': activeTab === 'knives' }]">
+            <span class="nav-tab__text">Knives</span>
           </button>
-          <button @click="setActiveTab('gloves')" :class="['nav-tab', { 'nav-tab-active': activeTab === 'gloves' }]">
-            <span class="nav-tab-icon">🧤</span>
-            <span class="nav-tab-text">Перчатки</span>
+          <button @click="setActiveTab('gloves')" :class="['nav-tab', { 'nav-tab--active': activeTab === 'gloves' }]">
+            <span class="nav-tab__text">Gloves</span>
           </button>
-          <div class="w-px mx-2 self-stretch" style="background: linear-gradient(to bottom, transparent, rgba(255, 107, 0, 0.3), transparent);"></div>
-          <button @click="setActiveTab('pistols')" :class="['nav-tab', { 'nav-tab-active': activeTab === 'pistols' }]">
-            <span class="nav-tab-text">Пистолеты</span>
+          <div class="nav-tabs__sep"></div>
+          <button @click="setActiveTab('pistols')" :class="['nav-tab', { 'nav-tab--active': activeTab === 'pistols' }]">
+            <span class="nav-tab__text">Pistols</span>
           </button>
-          <button @click="setActiveTab('rifles')" :class="['nav-tab', { 'nav-tab-active': activeTab === 'rifles' }]">
-            <span class="nav-tab-text">Винтовки</span>
+          <button @click="setActiveTab('rifles')" :class="['nav-tab', { 'nav-tab--active': activeTab === 'rifles' }]">
+            <span class="nav-tab__text">Rifles</span>
           </button>
-          <button @click="setActiveTab('smgs')" :class="['nav-tab', { 'nav-tab-active': activeTab === 'smgs' }]">
-            <span class="nav-tab-text">ПП</span>
+          <button @click="setActiveTab('smgs')" :class="['nav-tab', { 'nav-tab--active': activeTab === 'smgs' }]">
+            <span class="nav-tab__text">SMG</span>
           </button>
-          <button @click="setActiveTab('snipers')" :class="['nav-tab', { 'nav-tab-active': activeTab === 'snipers' }]">
-            <span class="nav-tab-text">Снайперки</span>
+          <button @click="setActiveTab('snipers')" :class="['nav-tab', { 'nav-tab--active': activeTab === 'snipers' }]">
+            <span class="nav-tab__text">Snipers</span>
           </button>
-          <button @click="setActiveTab('heavy')" :class="['nav-tab', { 'nav-tab-active': activeTab === 'heavy' }]">
-            <span class="nav-tab-text">Тяжелое</span>
+          <button @click="setActiveTab('heavy')" :class="['nav-tab', { 'nav-tab--active': activeTab === 'heavy' }]">
+            <span class="nav-tab__text">Heavy</span>
           </button>
         </nav>
       </div>
     </header>
 
-    <main class="mx-auto px-4 py-12" style="max-width: 1600px;">
+    <main class="main-wrap" :class="{ 'team-t': selectedTeam === 2 }">
       <ClientOnly>
-        <div v-if="!user.authenticated" class="text-center py-32 scale-in">
-          <div class="relative inline-block mb-8">
-            <h1 class="text-6xl font-bold mb-6 tracking-wide relative z-10" style="text-transform: uppercase; letter-spacing: 0.1em;">
-              <span class="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 bg-clip-text text-transparent">
-                Добро пожаловать
-              </span>
-            </h1>
-            <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-500 opacity-30 blur-3xl"></div>
-          </div>
-          <p class="text-xl mb-12 tracking-wide" style="color: var(--color-tactical-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-            Войдите через Steam чтобы выбрать скины для оружия
-          </p>
-          <div class="flex justify-center gap-4">
-            <div class="w-16 h-1 rounded-full pulse-glow" style="background-color: var(--color-accent-primary);"></div>
-            <div class="w-16 h-1 rounded-full pulse-glow" style="background-color: var(--color-accent-primary); animation-delay: 0.2s;"></div>
-            <div class="w-16 h-1 rounded-full pulse-glow" style="background-color: var(--color-accent-primary); animation-delay: 0.4s;"></div>
-          </div>
-        </div>
+        <!-- ====================================== -->
+        <!-- HERO (unauthenticated)                  -->
+        <!-- ====================================== -->
+        <section v-if="!user.authenticated" class="hero scale-in">
+          <div class="hero-orb hero-orb--1"></div>
+          <div class="hero-orb hero-orb--2"></div>
+          <div class="hero-orb hero-orb--3"></div>
 
-        <div v-else>
-          <!-- Show all categories view when no tab is active -->
-          <div v-if="!activeTab">
-            <div class="mb-12 scale-in">
-              <h1 class="text-5xl font-bold mb-4 tracking-wide relative inline-block" style="text-transform: uppercase; letter-spacing: 0.1em;">
-                <span class="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-                  Выберите оружие
-                </span>
-                <div class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
-              </h1>
+          <div class="hero__content">
+            <div class="hero__badge">
+              <span class="hero__badge-dot"></span>
+              <span>Steam Auth Required</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+            <h1 class="hero__title">
+              <span class="gradient-text-primary">Craft your</span><br />
+              <span class="gradient-text-accent">perfect loadout</span>
+            </h1>
+
+            <p class="hero__subtitle">
+              Премиум-интерфейс для выбора, превью и смены скинов CS2.
+              Войди через Steam — и получи полный контроль над своим арсеналом.
+            </p>
+
+            <div class="hero__cta">
+              <SteamLoginBtn />
+              <a href="#features" class="btn-ghost">Узнать больше</a>
+            </div>
+
+            <div class="hero__stats">
+              <div class="stat">
+                <div class="stat__value">2.5K+</div>
+                <div class="stat__label">Skins</div>
+              </div>
+              <div class="stat stat--div"></div>
+              <div class="stat">
+                <div class="stat__value">40+</div>
+                <div class="stat__label">Weapons</div>
+              </div>
+              <div class="stat stat--div"></div>
+              <div class="stat">
+                <div class="stat__value">∞</div>
+                <div class="stat__label">Combos</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================== -->
+        <!-- AUTHENTICATED                          -->
+        <!-- ====================================== -->
+        <div v-else>
+          <!-- No active tab → overview -->
+          <div v-if="!activeTab">
+            <div class="section-head scale-in">
+              <div>
+                <div class="section-head__eyebrow">
+                  <span class="section-head__dot"></span>
+                  Your arsenal
+                </div>
+                <h1 class="section-head__title gradient-text-primary">Выберите оружие</h1>
+                <p class="section-head__sub">Ножи, перчатки или любая пушка — одним кликом.</p>
+              </div>
+
+              <button @click="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
+                <div class="team-toggle__track">
+                  <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
+                  <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
+                    <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
+                  </div>
+                  <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
+                    <span class="team-toggle__badge team-toggle__badge--t">T</span>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            <!-- Knives & Gloves featured -->
+            <div class="featured-grid">
               <div
                 @click="setActiveTab('knives')"
-                class="stagger-item relative group rounded-lg p-8 cursor-pointer transition-all shimmer-effect overflow-hidden"
-                style="animation-delay: 0s; background-color: var(--color-tactical-elevated); border: 2px solid var(--color-tactical-border);"
+                class="featured-card glass-card stagger-item"
+                style="animation-delay: 0s;"
               >
-                <div class="corner-brackets" style="color: var(--color-accent-primary);"></div>
-                <div class="corner-brackets-full" style="color: var(--color-accent-primary);"></div>
-                <div class="scan-line"></div>
-                <div class="relative z-10">
-                  <div class="text-4xl mb-4">🔪</div>
-                  <h2 class="text-2xl font-bold mb-3 tracking-wide group-hover:text-orange-500 transition-colors" style="text-transform: uppercase; letter-spacing: 0.05em;">
-                    Ножи
-                  </h2>
-                  <p class="tracking-wide" style="color: var(--color-tactical-muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem;">
+                <div class="featured-card__shine scan-line"></div>
+                <div class="featured-card__content">
+                  <div class="featured-card__icon">
+                    <svg viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M311.96 258.5L105.55 484l-30-28.31L288.92 236.7zM139.77 417.7a7.41 7.41 0 1 0 .3 10.47 7.41 7.41 0 0 0-.3-10.47zm23.74-25.14a7.41 7.41 0 1 0 .3 10.47 7.41 7.41 0 0 0-.29-10.44zm23.76-25.11a7.41 7.41 0 1 0 .3 10.47 7.41 7.41 0 0 0-.3-10.47zm23.74-25.15a7.41 7.41 0 1 0 .3 10.47 7.41 7.41 0 0 0-.3-10.47zm23.76-25.14a7.41 7.41 0 1 0 .3 10.47 7.41 7.41 0 0 0-.3-10.47zm23.74-25.14a7.41 7.41 0 1 0 .3 10.47 7.41 7.41 0 0 0-.31-10.47zm23.74-25.14a7.41 7.41 0 1 0 .3 10.47 7.41 7.41 0 0 0-.3-10.47zM52.67 433.13l-28.26-30 225.85-206 21.71 23.02zm36.9-63.05a7.41 7.41 0 1 0-.32 10.47 7.41 7.41 0 0 0 .33-10.47zm25.2-23.7a7.41 7.41 0 1 0-.32 10.47 7.41 7.41 0 0 0 .32-10.47zm25.17-23.68a7.41 7.41 0 1 0-.32 10.47 7.41 7.41 0 0 0 .32-10.47zm25.18-23.7a7.41 7.41 0 1 0-.32 10.47 7.41 7.41 0 0 0 .32-10.5zm25.18-23.7a7.41 7.41 0 1 0-.32 10.47 7.41 7.41 0 0 0 .32-10.5zm25.18-23.7a7.41 7.41 0 1 0-.32 10.47 7.41 7.41 0 0 0 .32-10.51zm25.18-23.7a7.41 7.41 0 1 0-.32 10.47 7.41 7.41 0 0 0 .32-10.51zm63.89 1.63c12.87-10.8 25.09-20.92 37-30.79C425.04 129.57 475.68 87.63 487.59 28c-8.36 6.7-63.45 50.38-92.82 58.58l-114 119.47z"/>
+                    </svg>
+                  </div>
+                  <h2 class="featured-card__title">Ножи</h2>
+                  <p class="featured-card__desc">Каждое движение подчёркнуто стилем</p>
+                  <div class="featured-card__cta">
                     Выбрать нож
-                  </p>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </div>
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/10 group-hover:to-amber-500/5 transition-all duration-500"></div>
+                <div class="featured-card__preview">
+                  <img v-if="equippedKnifeImage" :src="equippedKnifeImage" alt="Текущий нож" />
+                  <div v-else class="featured-card__preview-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+                  </div>
+                </div>
               </div>
 
               <div
                 @click="setActiveTab('gloves')"
-                class="stagger-item relative group rounded-lg p-8 cursor-pointer transition-all shimmer-effect overflow-hidden"
-                style="animation-delay: 0.1s; background-color: var(--color-tactical-elevated); border: 2px solid var(--color-tactical-border);"
+                class="featured-card glass-card stagger-item"
+                style="animation-delay: 0.08s;"
               >
-                <div class="corner-brackets" style="color: var(--color-accent-primary);"></div>
-                <div class="corner-brackets-full" style="color: var(--color-accent-primary);"></div>
-                <div class="scan-line"></div>
-                <div class="relative z-10">
-                  <div class="text-4xl mb-4">🧤</div>
-                  <h2 class="text-2xl font-bold mb-3 tracking-wide group-hover:text-orange-500 transition-colors" style="text-transform: uppercase; letter-spacing: 0.05em;">
-                    Перчатки
-                  </h2>
-                  <p class="tracking-wide" style="color: var(--color-tactical-muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem;">
+                <div class="featured-card__shine scan-line"></div>
+                <div class="featured-card__content">
+                  <div class="featured-card__icon">
+                    <svg viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M403.975,312.052V120.966c0-29.174-23.734-52.908-52.908-52.908c-5.935,0-11.645,0.983-16.975,2.793 c-8.947-27.967-39.245-43.584-67.385-34.029C259.885,15.488,239.867,0,216.299,0c-23.568,0-43.586,15.488-50.409,36.822 c-34.274-11.64-69.883,14.024-69.883,50.115v65.972c-33.746-9.612-67.384,15.876-67.384,50.894V312.05 c0,31.337,21.181,57.823,49.977,65.893c0,10.89,0,101.782,0,114.838c0,10.612,8.604,19.216,19.216,19.216h236.966 c10.612,0,19.216-8.604,19.216-19.216c0-12.989,0-103.969,0-114.838C382.795,369.875,403.975,343.389,403.975,312.052z M315.566,473.567H117.032v-15.07h198.534V473.567z M365.543,312.052c0,16.533-13.451,29.985-29.985,29.985h-0.775 c-10.612,0-19.216,8.604-19.216,19.216v58.812H117.032v-58.812c0-10.612-8.604-19.216-19.216-19.216H97.04 c-16.533,0-29.985-13.451-29.985-29.985V203.804c0-7.982,6.494-14.476,14.476-14.476s14.476,6.494,14.476,14.476 c0,10.612,8.604,19.216,19.216,19.216c10.612,0,19.216-8.604,19.216-19.216V86.937c0-7.982,6.494-14.476,14.476-14.476 c7.982,0,14.476,6.494,14.476,14.476v87.593c0,10.612,8.604,19.216,19.216,19.216c10.612,0,19.216-8.604,19.216-19.216V86.937 V52.908c0-7.982,6.494-14.476,14.476-14.476s14.476,6.494,14.476,14.476v34.029v87.593c0,10.612,8.604,19.216,19.216,19.216 c10.614,0,19.216-8.604,19.216-19.216V86.937c0-7.982,6.492-14.476,14.476-14.476c7.981,0,14.476,6.494,14.476,14.476 c0,9.627,0,79.872,0,87.593c0,10.612,8.604,19.216,19.216,19.216c10.612,0,19.216-8.604,19.216-19.216v-53.564 c0-7.982,6.494-14.476,14.476-14.476c7.981,0,14.476,6.494,14.476,14.476V312.052z"/>
+                      <path d="M423.843,67.721c-10.612,0-19.216,8.604-19.216,19.216c0,10.612,8.604,19.216,19.216,19.216 c11.636,0,21.102,9.466,21.102,21.1V312.05c0,31.852-15.632,61.86-41.815,80.269c-5.117,3.599-8.163,9.463-8.163,15.72v65.529 h-11.441c-10.612,0-19.216,8.604-19.216,19.216S372.913,512,383.525,512h30.657c10.612,0,19.216-8.604,19.216-19.216V417.55 c31.469-25.849,49.978-64.569,49.978-105.498c0-7.007,0-167.918,0-184.891C483.323,94.377,456.637,67.721,423.843,67.721z"/>
+                    </svg>
+                  </div>
+                  <h2 class="featured-card__title">Перчатки</h2>
+                  <p class="featured-card__desc">Финальный штрих твоего образа</p>
+                  <div class="featured-card__cta">
                     Выбрать перчатки
-                  </p>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </div>
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/10 group-hover:to-amber-500/5 transition-all duration-500"></div>
+                <div class="featured-card__preview">
+                  <img v-if="equippedGloveImage" :src="equippedGloveImage" alt="Текущие перчатки" />
+                  <div v-else class="featured-card__preview-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="mt-16">
-              <div class="mb-12 scale-in">
-                <h2 class="text-4xl font-bold mb-4 tracking-wide relative inline-block" style="text-transform: uppercase; letter-spacing: 0.1em;">
-                  <span class="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-                    Оружие по категориям
-                  </span>
-                  <div class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
-                </h2>
+            <!-- Weapons by category -->
+            <div class="section-head section-head--compact scale-in">
+              <div class="section-head__eyebrow">
+                <span class="section-head__dot"></span>
+                Arsenal
+              </div>
+              <h2 class="section-head__title section-head__title--sm gradient-text-primary">Оружие по категориям</h2>
+            </div>
+
+            <div v-for="(weapons, category) in weaponsByCategory" :key="category" class="category-block">
+              <div class="category-head">
+                <span class="category-head__dot pulse-glow"></span>
+                <span class="category-head__title">{{ tabTitles[category] }}</span>
+                <div class="category-head__line"></div>
+                <span class="category-head__count">{{ weapons.length }}</span>
               </div>
 
-              <div v-for="(weapons, category) in weaponsByCategory" :key="category" class="mb-12">
-                <h3 class="text-2xl font-semibold mb-6 capitalize tracking-wide flex items-center gap-3" style="color: var(--color-accent-primary); text-transform: uppercase; letter-spacing: 0.05em;">
-                  <div class="w-2 h-2 rounded-full pulse-glow" style="background-color: var(--color-accent-primary);"></div>
-                  {{ tabTitles[category] }}
-                  <div class="flex-1 h-px" style="background: linear-gradient(to right, var(--color-accent-primary), transparent);"></div>
-                </h3>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                  <NuxtLink
-                    v-for="(weapon, index) in weapons"
-                    :key="weapon.id"
-                    :to="`/weapon/${weapon.id}`"
-                    class="stagger-item relative group rounded-lg p-5 cursor-pointer transition-all text-center overflow-hidden"
-                    :style="{
-                      animationDelay: `${index * 0.03}s`,
-                      backgroundColor: 'var(--color-tactical-surface)',
-                      border: '1px solid var(--color-tactical-border)',
-                    }"
-                  >
-                    <div class="corner-brackets" style="color: var(--color-accent-primary); opacity: 0; transition: opacity 0.3s;"></div>
-                    <div class="relative z-10 font-medium tracking-wide group-hover:text-orange-500 transition-colors" style="font-size: 0.875rem;">
-                      {{ weapon.name }}
-                    </div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/20 group-hover:to-amber-500/10 transition-all duration-300"></div>
-                  </NuxtLink>
-                </div>
+              <div class="weapons-grid">
+                <NuxtLink
+                  v-for="(weapon, index) in weapons"
+                  :key="weapon.id"
+                  :to="`/weapon/${weapon.id}`"
+                  class="weapon-card glass-card stagger-item"
+                  :style="{ animationDelay: `${index * 0.03}s` }"
+                >
+                  <div class="weapon-card__img">
+                    <img
+                      v-if="getWeaponImage(weapon.id)"
+                      :src="getWeaponImage(weapon.id)"
+                      :alt="weapon.name"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="weapon-card__name">{{ weapon.name }}</div>
+                </NuxtLink>
               </div>
             </div>
           </div>
 
-          <!-- Tab view when a specific tab is active -->
+          <!-- Tab view -->
           <div v-else>
-            <div class="mb-12 scale-in">
-              <h1 class="text-5xl font-bold mb-4 tracking-wide relative inline-block" style="text-transform: uppercase; letter-spacing: 0.1em;">
-                <span class="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-                  {{ tabTitles[activeTab] }}
-                </span>
-                <div class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
-              </h1>
+            <div class="section-head scale-in">
+              <div class="section-head__eyebrow">
+                <button class="back-btn" @click="setActiveTab(null)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+                  Назад
+                </button>
+              </div>
+              <h1 class="section-head__title gradient-text-primary">{{ tabTitles[activeTab] }}</h1>
             </div>
 
             <Transition name="tab-fade" mode="out-in">
-              <!-- Knives Tab -->
+              <!-- Knives -->
               <div v-if="activeTab === 'knives'" key="knives">
-                <div v-if="loading" class="text-center py-32">
-                  <div class="inline-flex flex-col items-center gap-6">
-                    <div class="flex gap-2">
-                      <div class="w-3 h-3 rounded-full pulse-glow" style="background-color: var(--color-accent-primary);"></div>
-                      <div class="w-3 h-3 rounded-full pulse-glow" style="background-color: var(--color-accent-primary); animation-delay: 0.2s;"></div>
-                      <div class="w-3 h-3 rounded-full pulse-glow" style="background-color: var(--color-accent-primary); animation-delay: 0.4s;"></div>
-                    </div>
-                    <div class="text-xl tracking-wide" style="color: var(--color-tactical-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-                      Загрузка...
-                    </div>
+                <div v-if="loading" class="loading-wrap">
+                  <div class="loading-dots">
+                    <span></span><span></span><span></span>
                   </div>
+                  <div class="loading-text">Загрузка арсенала</div>
                 </div>
-                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                <div v-else class="arsenal-grid">
                   <NuxtLink
                     v-for="(knife, index) in knifeTypes"
                     :key="knife.weapon_id"
                     :to="`/knife/${knife.weapon_id}`"
-                    class="stagger-item relative group rounded-lg py-8 px-6 cursor-pointer transition-all text-center overflow-hidden shimmer-on-hover"
-                    :style="{
-                      animationDelay: `${index * 0.05}s`,
-                      backgroundColor: 'var(--color-tactical-elevated)',
-                      border: '2px solid var(--color-tactical-border)',
-                    }"
+                    class="arsenal-card glass-card stagger-item shimmer-on-hover"
+                    :style="{ animationDelay: `${index * 0.04}s` }"
                     @mouseenter="onKnifeHover($event, true)"
                     @mouseleave="onKnifeHover($event, false)"
                   >
-                    <div class="corner-brackets" style="color: var(--color-accent-primary);"></div>
-                    <div class="scan-line"></div>
-                    <div class="relative z-10">
-                      <div class="mb-4 h-32 flex items-center justify-center">
-                        <img
-                          v-if="getKnifeImage(knife.weapon_id)"
-                          :src="getKnifeImage(knife.weapon_id)"
-                          :alt="knife.name"
-                          class="max-h-full max-w-full object-contain float-animation-item"
-                        />
-                        <div v-else class="text-3xl float-animation-item">🔪</div>
-                      </div>
-                      <div class="font-bold tracking-wide group-hover:text-orange-500 transition-colors" style="text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem;">
-                        {{ knife.name }}
-                      </div>
+                    <div class="arsenal-card__shine scan-line"></div>
+                    <div class="arsenal-card__img">
+                      <img
+                        v-if="getKnifeImage(knife.weapon_id)"
+                        :src="getKnifeImage(knife.weapon_id)"
+                        :alt="knife.name"
+                        class="float-animation-item"
+                        loading="lazy"
+                      />
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/20 group-hover:to-amber-500/10 transition-all duration-500"></div>
+                    <div class="arsenal-card__name">{{ knife.name }}</div>
                   </NuxtLink>
                 </div>
               </div>
 
-              <!-- Gloves Tab -->
+              <!-- Gloves -->
               <div v-else-if="activeTab === 'gloves'" key="gloves">
-                <div v-if="loading" class="text-center py-32">
-                  <div class="inline-flex flex-col items-center gap-6">
-                    <div class="flex gap-2">
-                      <div class="w-3 h-3 rounded-full pulse-glow" style="background-color: var(--color-accent-primary);"></div>
-                      <div class="w-3 h-3 rounded-full pulse-glow" style="background-color: var(--color-accent-primary); animation-delay: 0.2s;"></div>
-                      <div class="w-3 h-3 rounded-full pulse-glow" style="background-color: var(--color-accent-primary); animation-delay: 0.4s;"></div>
-                    </div>
-                    <div class="text-xl tracking-wide" style="color: var(--color-tactical-muted); text-transform: uppercase; letter-spacing: 0.05em;">
-                      Загрузка...
-                    </div>
+                <div v-if="loading" class="loading-wrap">
+                  <div class="loading-dots">
+                    <span></span><span></span><span></span>
                   </div>
+                  <div class="loading-text">Загрузка арсенала</div>
                 </div>
-                <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                <div v-else class="arsenal-grid">
                   <NuxtLink
                     v-for="(glove, index) in gloveTypes"
                     :key="glove.weapon_id"
                     :to="`/glove/${glove.weapon_id}`"
-                    class="stagger-item relative group rounded-lg py-8 px-6 cursor-pointer transition-all text-center overflow-hidden shimmer-on-hover"
-                    :style="{
-                      animationDelay: `${index * 0.05}s`,
-                      backgroundColor: 'var(--color-tactical-elevated)',
-                      border: '2px solid var(--color-tactical-border)',
-                    }"
+                    class="arsenal-card glass-card stagger-item shimmer-on-hover"
+                    :style="{ animationDelay: `${index * 0.04}s` }"
                     @mouseenter="onGloveHover($event, true)"
                     @mouseleave="onGloveHover($event, false)"
                   >
-                    <div class="corner-brackets" style="color: var(--color-accent-primary);"></div>
-                    <div class="scan-line"></div>
-                    <div class="relative z-10">
-                      <div class="mb-4 h-32 flex items-center justify-center">
-                        <img
-                          v-if="getGloveImage(glove.weapon_id)"
-                          :src="getGloveImage(glove.weapon_id)"
-                          :alt="glove.name"
-                          class="max-h-full max-w-full object-contain float-animation-item"
-                        />
-                        <div v-else class="text-3xl float-animation-item">🧤</div>
-                      </div>
-                      <div class="font-bold tracking-wide group-hover:text-orange-500 transition-colors" style="text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem;">
-                        {{ glove.name }}
-                      </div>
+                    <div class="arsenal-card__shine scan-line"></div>
+                    <div class="arsenal-card__img">
+                      <img
+                        v-if="getGloveImage(glove.weapon_id)"
+                        :src="getGloveImage(glove.weapon_id)"
+                        :alt="glove.name"
+                        class="float-animation-item"
+                        loading="lazy"
+                      />
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/20 group-hover:to-amber-500/10 transition-all duration-500"></div>
+                    <div class="arsenal-card__name">{{ glove.name }}</div>
                   </NuxtLink>
                 </div>
               </div>
 
-              <!-- Weapons Tabs -->
+              <!-- Weapons tabs -->
               <div v-else :key="activeTab">
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                <div class="arsenal-grid">
                   <NuxtLink
                     v-for="(weapon, index) in weaponsByCategory[activeTab]"
                     :key="weapon.id"
                     :to="`/weapon/${weapon.id}`"
-                    class="stagger-item relative group rounded-lg py-8 px-6 cursor-pointer transition-all text-center overflow-hidden"
-                    :style="{
-                      animationDelay: `${index * 0.03}s`,
-                      backgroundColor: 'var(--color-tactical-surface)',
-                      border: '1px solid var(--color-tactical-border)',
-                    }"
+                    class="arsenal-card glass-card stagger-item"
+                    :style="{ animationDelay: `${index * 0.03}s` }"
                   >
-                    <div class="corner-brackets" style="color: var(--color-accent-primary); opacity: 0; transition: opacity 0.3s;"></div>
-                    <div class="relative z-10">
-                      <div class="mb-4 h-32 flex items-center justify-center">
-                        <img
-                          v-if="getWeaponImage(weapon.id)"
-                          :src="getWeaponImage(weapon.id)"
-                          :alt="weapon.name"
-                          class="max-h-full max-w-full object-contain"
-                        />
-                      </div>
-                      <div class="font-medium tracking-wide group-hover:text-orange-500 transition-colors" style="font-size: 0.875rem;">
-                        {{ weapon.name }}
-                      </div>
+                    <div class="arsenal-card__img">
+                      <img
+                        v-if="getWeaponImage(weapon.id)"
+                        :src="getWeaponImage(weapon.id)"
+                        :alt="weapon.name"
+                        loading="lazy"
+                      />
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/20 group-hover:to-amber-500/10 transition-all duration-300"></div>
+                    <div class="arsenal-card__name">{{ weapon.name }}</div>
                   </NuxtLink>
                 </div>
               </div>
@@ -313,6 +338,7 @@
 
 <script setup lang="ts">
 import { WEAPON_MAP, getWeaponCategory, getDefaultWeaponImage } from '~/utils/weapons'
+import gsap from 'gsap'
 
 const route = useRoute()
 const router = useRouter()
@@ -320,28 +346,52 @@ const { user, fetchUser } = useSteamAuth()
 const { skins, loading, fetchSkins } = useSkinsData()
 const { playerSkins, fetchPlayerSkins } = usePlayerSkins()
 
-// Initialize activeTab from URL query immediately (before mount)
 const activeTab = ref<string | null>((route.query.tab as string) || null)
+const scrolled = ref(false)
+const selectedTeam = ref<2 | 3>(3) // 3 = CT (default), 2 = T
+
+const activeKnife = ref<{ knife_t: string | null; knife_ct: string | null }>({ knife_t: null, knife_ct: null })
+const activeGloves = ref<{ gloves_t: number | null; gloves_ct: number | null }>({ gloves_t: null, gloves_ct: null })
 
 const tabTitles: Record<string, string> = {
   knives: 'Ножи',
   gloves: 'Перчатки',
   pistols: 'Пистолеты',
   rifles: 'Винтовки',
-  smgs: 'Пистолеты-пулеметы',
+  smgs: 'Пистолеты-пулемёты',
   snipers: 'Снайперские винтовки',
-  heavy: 'Тяжелое оружие'
+  heavy: 'Тяжёлое оружие',
 }
 
 onMounted(async () => {
   await fetchUser()
   await fetchSkins()
   await fetchPlayerSkins()
+
+  // Fetch active knife and gloves
+  if (user.value.steamid) {
+    try {
+      activeKnife.value = await $fetch('/api/player/active-knife')
+      activeGloves.value = await $fetch('/api/player/active-gloves')
+    } catch (e) {
+      console.error('Failed to fetch active knife/gloves:', e)
+    }
+  }
+
+  const onScroll = () => {
+    scrolled.value = window.scrollY > 12
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('scroll', onScroll)
+  })
 })
 
-const setActiveTab = (tab: string) => {
+const setActiveTab = (tab: string | null) => {
   activeTab.value = tab
-  router.push({ query: { tab } })
+  router.push({ query: tab ? { tab } : {} })
 }
 
 const weaponsByCategory = computed(() => {
@@ -374,7 +424,7 @@ const knifeTypes = computed(() => {
     if (skin.weapon && !uniqueKnives.has(skin.weapon.weapon_id)) {
       uniqueKnives.set(skin.weapon.weapon_id, {
         weapon_id: skin.weapon.weapon_id,
-        name: skin.weapon.name
+        name: skin.weapon.name,
       })
     }
   })
@@ -394,7 +444,7 @@ const gloveTypes = computed(() => {
     if (skin.weapon && !uniqueGloves.has(skin.weapon.weapon_id)) {
       uniqueGloves.set(skin.weapon.weapon_id, {
         weapon_id: skin.weapon.weapon_id,
-        name: skin.weapon.name
+        name: skin.weapon.name,
       })
     }
   })
@@ -404,73 +454,52 @@ const gloveTypes = computed(() => {
   )
 })
 
-// Get knife image - either selected skin or default knife
 const getKnifeImage = (weaponId: number) => {
-  // Check if player has selected a skin for this knife (check both teams)
   const playerSkinT = playerSkins.value.find(
-    skin => skin.weapon_defindex === weaponId && skin.weapon_team === 2
+    s => s.weapon_defindex === weaponId && s.weapon_team === 2
   )
   const playerSkinCT = playerSkins.value.find(
-    skin => skin.weapon_defindex === weaponId && skin.weapon_team === 3
+    s => s.weapon_defindex === weaponId && s.weapon_team === 3
   )
-
-  // Prefer T side, fallback to CT side
   const playerSkin = playerSkinT || playerSkinCT
 
   if (playerSkin && playerSkin.weapon_paint_id) {
-    // Find the skin by paint_index
     const selectedSkin = skins.value.find(
-      skin => skin.weapon?.weapon_id === weaponId &&
-              parseInt(skin.paint_index) === playerSkin.weapon_paint_id
+      s => s.weapon?.weapon_id === weaponId &&
+           parseInt(s.paint_index) === playerSkin.weapon_paint_id
     )
-    if (selectedSkin) {
-      return selectedSkin.image
-    }
+    if (selectedSkin) return selectedSkin.image
   }
 
-  // Return vanilla knife - find skin without " | " in name (vanilla has no pattern)
-  const knifeSkins = skins.value.filter(
-    skin => skin.weapon?.weapon_id === weaponId
-  )
-
-  const vanillaSkin = knifeSkins.find(skin => !skin.name.includes(' | '))
-
+  const knifeSkins = skins.value.filter(s => s.weapon?.weapon_id === weaponId)
+  const vanillaSkin = knifeSkins.find(s => !s.name.includes(' | '))
   if (vanillaSkin) return vanillaSkin.image
 
-  // Fallback to lowest paint_index
   const sortedSkins = knifeSkins
     .filter(s => s.paint_index)
     .sort((a, b) => parseInt(a.paint_index) - parseInt(b.paint_index))
   return sortedSkins[0]?.image || ''
 }
 
-// Get glove image - either selected skin or default glove
 const getGloveImage = (weaponId: number) => {
   const playerSkinT = playerSkins.value.find(
-    skin => skin.weapon_defindex === weaponId && skin.weapon_team === 2
+    s => s.weapon_defindex === weaponId && s.weapon_team === 2
   )
   const playerSkinCT = playerSkins.value.find(
-    skin => skin.weapon_defindex === weaponId && skin.weapon_team === 3
+    s => s.weapon_defindex === weaponId && s.weapon_team === 3
   )
-
   const playerSkin = playerSkinT || playerSkinCT
 
   if (playerSkin && playerSkin.weapon_paint_id) {
     const selectedSkin = skins.value.find(
-      skin => skin.weapon?.weapon_id === weaponId &&
-              parseInt(skin.paint_index) === playerSkin.weapon_paint_id
+      s => s.weapon?.weapon_id === weaponId &&
+           parseInt(s.paint_index) === playerSkin.weapon_paint_id
     )
-    if (selectedSkin) {
-      return selectedSkin.image
-    }
+    if (selectedSkin) return selectedSkin.image
   }
 
-  const gloveSkins = skins.value.filter(
-    skin => skin.weapon?.weapon_id === weaponId
-  )
-
-  const vanillaSkin = gloveSkins.find(skin => !skin.name.includes(' | '))
-
+  const gloveSkins = skins.value.filter(s => s.weapon?.weapon_id === weaponId)
+  const vanillaSkin = gloveSkins.find(s => !s.name.includes(' | '))
   if (vanillaSkin) return vanillaSkin.image
 
   const sortedSkins = gloveSkins
@@ -479,38 +508,89 @@ const getGloveImage = (weaponId: number) => {
   return sortedSkins[0]?.image || ''
 }
 
-// Get weapon image - either selected skin or default weapon
-const getWeaponImage = (weaponId: number) => {
-  const playerSkinT = playerSkins.value.find(
-    skin => skin.weapon_defindex === weaponId && skin.weapon_team === 2
-  )
-  const playerSkinCT = playerSkins.value.find(
-    skin => skin.weapon_defindex === weaponId && skin.weapon_team === 3
+const equippedKnifeImage = computed(() => {
+  // Найти weapon_defindex активного ножа для выбранной команды
+  const knifeName = selectedTeam.value === 2 ? activeKnife.value.knife_t : activeKnife.value.knife_ct
+  if (!knifeName) return ''
+
+  // Найти weapon_id по имени ножа
+  const KNIFE_MAP: Record<string, number> = {
+    'weapon_bayonet': 500,
+    'weapon_knife_css': 503,
+    'weapon_knife_flip': 505,
+    'weapon_knife_gut': 506,
+    'weapon_knife_karambit': 507,
+    'weapon_knife_m9_bayonet': 508,
+    'weapon_knife_tactical': 509,
+    'weapon_knife_falchion': 512,
+    'weapon_knife_survival_bowie': 514,
+    'weapon_knife_butterfly': 515,
+    'weapon_knife_push': 516,
+    'weapon_knife_cord': 517,
+    'weapon_knife_canis': 518,
+    'weapon_knife_ursus': 519,
+    'weapon_knife_gypsy_jackknife': 520,
+    'weapon_knife_outdoor': 521,
+    'weapon_knife_stiletto': 522,
+    'weapon_knife_widowmaker': 523,
+    'weapon_knife_skeleton': 525,
+  }
+  const weaponDefindex = KNIFE_MAP[knifeName]
+  if (!weaponDefindex) return ''
+
+  // Найти playerSkin для этого ножа и выбранной команды
+  const knifeSkin = playerSkins.value.find(ps =>
+    ps.weapon_defindex === weaponDefindex && ps.weapon_team === selectedTeam.value
   )
 
-  const playerSkin = playerSkinT || playerSkinCT
+  if (!knifeSkin || !knifeSkin.weapon_paint_id) return ''
+
+  // Найти скин по paint_id
+  const skin = skins.value.find(
+    s => s.weapon?.weapon_id === weaponDefindex &&
+         parseInt(s.paint_index) === knifeSkin.weapon_paint_id
+  )
+  return skin?.image || ''
+})
+
+const equippedGloveImage = computed(() => {
+  // Найти weapon_defindex активных перчаток для выбранной команды
+  const gloveDefindex = selectedTeam.value === 2 ? activeGloves.value.gloves_t : activeGloves.value.gloves_ct
+  if (!gloveDefindex) return ''
+
+  // Найти playerSkin для этих перчаток и выбранной команды
+  const gloveSkin = playerSkins.value.find(ps =>
+    ps.weapon_defindex === gloveDefindex && ps.weapon_team === selectedTeam.value
+  )
+  if (!gloveSkin || !gloveSkin.weapon_paint_id) return ''
+
+  // Найти скин по paint_id
+  const skin = skins.value.find(
+    s => s.weapon?.weapon_id === gloveDefindex &&
+         parseInt(s.paint_index) === gloveSkin.weapon_paint_id
+  )
+  return skin?.image || ''
+})
+
+const getWeaponImage = (weaponId: number) => {
+  const playerSkin = playerSkins.value.find(
+    s => s.weapon_defindex === weaponId && s.weapon_team === selectedTeam.value
+  )
 
   if (playerSkin && playerSkin.weapon_paint_id) {
     const selectedSkin = skins.value.find(
-      skin => skin.weapon?.weapon_id === weaponId &&
-              parseInt(skin.paint_index) === playerSkin.weapon_paint_id
+      s => s.weapon?.weapon_id === weaponId &&
+           parseInt(s.paint_index) === playerSkin.weapon_paint_id
     )
-    if (selectedSkin) {
-      return selectedSkin.image
-    }
+    if (selectedSkin) return selectedSkin.image
   }
 
-  // Return default weapon image from CS2-WeaponPaints
   return getDefaultWeaponImage(weaponId)
 }
-
-// GSAP animations for hover
-import gsap from 'gsap'
 
 const onKnifeHover = (event: MouseEvent, isEnter: boolean) => {
   const target = event.currentTarget as HTMLElement
   const floatItem = target.querySelector('.float-animation-item')
-
   if (!floatItem) return
 
   if (isEnter) {
@@ -519,14 +599,14 @@ const onKnifeHover = (event: MouseEvent, isEnter: boolean) => {
       duration: 1.5,
       ease: 'power1.inOut',
       repeat: -1,
-      yoyo: true
+      yoyo: true,
     })
   } else {
     gsap.to(floatItem, {
       y: 0,
       duration: 0.6,
       ease: 'power2.out',
-      overwrite: true
+      overwrite: true,
     })
   }
 }
@@ -534,7 +614,6 @@ const onKnifeHover = (event: MouseEvent, isEnter: boolean) => {
 const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   const target = event.currentTarget as HTMLElement
   const floatItem = target.querySelector('.float-animation-item')
-
   if (!floatItem) return
 
   if (isEnter) {
@@ -543,218 +622,938 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
       duration: 1.5,
       ease: 'power1.inOut',
       repeat: -1,
-      yoyo: true
+      yoyo: true,
     })
   } else {
     gsap.to(floatItem, {
       y: 0,
       duration: 0.6,
       ease: 'power2.out',
-      overwrite: true
+      overwrite: true,
     })
   }
 }
-
 </script>
 
 <style scoped>
-/* Liquid Glass Navigation Tabs - Apple Style */
-.nav-tab {
+/* ============================================ */
+/* STICKY GLASS NAVBAR                          */
+/* ============================================ */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 15, 31, 0.55);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.site-nav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.4), rgba(99, 102, 241, 0.3), transparent);
+  opacity: 0.7;
+}
+
+.site-nav--scrolled {
+  background: rgba(10, 15, 31, 0.8);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.6);
+}
+
+.site-nav__inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
   position: relative;
-  padding: 0.875rem 1.5rem;
-  border-radius: 1rem;
-  font-weight: 600;
-  white-space: nowrap;
-  font-size: 0.875rem;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.65);
+  z-index: 1;
+}
+
+.site-nav__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1.5rem;
+}
+
+/* Team Toggle */
+.team-toggle {
+  display: flex;
+  padding: 0.25rem;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.15);
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-top: auto;
+}
+
+.team-toggle:hover {
+  border-color: rgba(96, 165, 250, 0.3);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.team-toggle__track {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.team-toggle__slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(50% - 0.25rem);
+  height: 100%;
+  background: rgba(59, 130, 246, 0.15);
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+.team-toggle__slider--t {
+  left: calc(50% + 0.25rem);
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.team-toggle__option {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  overflow: visible;
+  padding: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 0.25s;
+}
+
+.team-toggle__option--active {
+  color: #fff;
+}
+
+.team-toggle__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: all 0.25s;
+}
+
+.team-toggle__badge--t {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.15));
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #FCD34D;
+}
+
+.team-toggle__badge--ct {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.15));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #60A5FA;
+}
+
+.team-toggle__option--active .team-toggle__badge--t {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.25));
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.3);
+}
+
+.team-toggle__option--active .team-toggle__badge--ct {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.25));
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.team-toggle__label {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .section-head {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .team-toggle__label {
+    display: none;
+  }
+  .team-toggle__option {
+    padding: 0.5rem;
+  }
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+}
+
+.brand__mark {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+
+.brand__mark-inner {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  letter-spacing: 0.05em;
+  position: relative;
   z-index: 1;
 }
 
-/* Liquid glass glow effect */
+.brand__mark-glow {
+  position: absolute;
+  inset: -50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 60%);
+  animation: orb-drift 5s ease-in-out infinite;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brand__sub {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 2px;
+}
+
+/* Nav Tabs */
+.nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nav-tabs__sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 0.4rem;
+  background: linear-gradient(180deg, transparent, rgba(96, 165, 250, 0.35), transparent);
+}
+
+.nav-tab {
+  position: relative;
+  padding: 0.55rem 1.15rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(229, 231, 235, 0.65);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
 .nav-tab::before {
   content: '';
   position: absolute;
-  inset: -2px;
-  background: radial-gradient(circle at 50% 0%,
-    rgba(255, 107, 0, 0.2) 0%,
-    rgba(255, 107, 0, 0.05) 50%,
-    transparent 100%
-  );
-  border-radius: 1rem;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(99, 102, 241, 0.12));
   opacity: 0;
-  transition: opacity 0.6s ease;
-  filter: blur(12px);
-  z-index: -1;
+  transition: opacity 0.35s;
 }
 
-/* Hover state - liquid morphing */
-.nav-tab:hover:not(.nav-tab-active) {
-  color: #fff;
-  background: rgba(255, 107, 0, 0.15);
-  border-color: rgba(255, 107, 0, 0.3);
-  transform: translateY(-3px) scale(1.02);
-  box-shadow:
-    0 8px 32px rgba(255, 107, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  overflow: hidden;
-}
-
-.nav-tab:hover:not(.nav-tab-active)::before {
-  opacity: 1;
-}
-
-/* Shimmer effect on hover for non-active tabs */
-.nav-tab:hover:not(.nav-tab-active)::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  animation: shimmer 2s ease-in-out infinite;
-  border-radius: 1rem;
-}
-
-/* Icon animations */
-.nav-tab-icon {
-  font-size: 1.125rem;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: grayscale(0.3) brightness(0.9);
-}
-
-.nav-tab:hover:not(.nav-tab-active) .nav-tab-icon {
-  transform: scale(1.15) rotate(-5deg);
-  filter: grayscale(0) brightness(1.2) drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
-}
-
-.nav-tab-text {
+.nav-tab__text {
   position: relative;
   z-index: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  transition: all 0.4s ease;
 }
 
-/* Active state - full liquid glass effect */
-.nav-tab-active {
+.nav-tab:hover {
   color: #fff;
-  background: linear-gradient(135deg,
-    rgba(255, 107, 0, 0.35) 0%,
-    rgba(251, 146, 60, 0.25) 50%,
-    rgba(255, 107, 0, 0.35) 100%
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 107, 0, 0.5);
-  box-shadow:
-    0 8px 32px rgba(255, 107, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
-    0 2px 8px rgba(0, 0, 0, 0.3) inset;
+  border-color: rgba(96, 165, 250, 0.35);
   transform: translateY(-2px);
-  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
 }
 
-/* Active glow - liquid effect */
-.nav-tab-active::before {
+.nav-tab:hover::before {
   opacity: 1;
-  background: radial-gradient(circle at 50% 0%,
-    rgba(255, 107, 0, 0.5) 0%,
-    rgba(251, 191, 36, 0.3) 50%,
-    transparent 100%
-  );
-  filter: blur(20px);
-  animation: liquid-pulse 3s ease-in-out infinite;
 }
 
-/* Shimmer effect on active tab */
-.nav-tab-active::after {
+.nav-tab--active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(99, 102, 241, 0.2));
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow:
+    0 8px 24px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.nav-tab--active::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
+  left: 50%;
+  bottom: -6px;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #60A5FA, #818CF8);
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.8);
+}
+
+/* ============================================ */
+/* MAIN WRAP                                    */
+/* ============================================ */
+.main-wrap {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================ */
+/* HERO                                         */
+/* ============================================ */
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 5rem 1rem 6rem;
+  isolation: isolate;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: -1;
+  animation: orb-drift 14s ease-in-out infinite;
+}
+
+.hero-orb--1 {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.4), transparent 70%);
+  top: -120px;
+  left: 15%;
+}
+
+.hero-orb--2 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 70%);
+  top: 80px;
+  right: 10%;
+  animation-delay: -5s;
+}
+
+.hero-orb--3 {
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.18), transparent 70%);
+  bottom: -80px;
+  left: 50%;
+  animation-delay: -9s;
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+}
+
+.hero__badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #60A5FA;
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.9);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.hero__title {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.75rem;
+}
+
+.hero__subtitle {
+  max-width: 580px;
+  margin: 0 auto 2.5rem;
+  font-size: 1.075rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.hero__cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 4rem;
+}
+
+.hero__stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.25rem 2.25rem;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.5);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat__value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60A5FA, #818CF8);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.stat--div {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+/* ============================================ */
+/* SECTION HEAD                                 */
+/* ============================================ */
+.section-head {
+  margin-bottom: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.section-head--compact {
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+}
+
+.section-head__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-glow);
+  margin-bottom: 1rem;
+}
+
+.section-head__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #60A5FA;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.8);
+}
+
+.section-head__title {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 0.75rem;
+}
+
+.section-head__title--sm {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.section-head__sub {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.back-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.back-btn:hover {
+  color: #fff;
+  border-color: rgba(96, 165, 250, 0.4);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+/* ============================================ */
+/* FEATURED CARDS (Knives / Gloves)             */
+/* ============================================ */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.featured-card {
+  position: relative;
+  padding: 2.5rem;
+  cursor: pointer;
+  isolation: isolate;
+  min-height: 240px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.featured-card__shine {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.featured-card:hover .featured-card__shine {
+  opacity: 1;
+}
+
+.featured-card__content {
+  position: relative;
+  z-index: 2;
+}
+
+.featured-card__preview {
+  position: relative;
+  z-index: 2;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.05));
+  border: 2px solid rgba(96, 165, 250, 0.2);
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.featured-card__preview img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3));
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.featured-card:hover .featured-card__preview img {
+  transform: scale(1.1);
+}
+
+.featured-card__preview-empty {
+  width: 48px;
+  height: 48px;
+  color: rgba(96, 165, 250, 0.25);
+}
+
+.featured-card__preview-empty svg {
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(255, 255, 255, 0.25),
-    transparent
-  );
-  animation: shimmer 3s ease-in-out infinite;
-  border-radius: 1rem;
 }
 
-.nav-tab-active .nav-tab-icon {
-  filter: grayscale(0) brightness(1.3) drop-shadow(0 0 12px rgba(255, 107, 0, 1));
-  animation: float-icon 3s ease-in-out infinite;
+.featured-card:hover .featured-card__preview {
+  border-color: rgba(96, 165, 250, 0.4);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.08));
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
 }
 
-.nav-tab-active .nav-tab-text {
-  text-shadow: 0 0 20px rgba(255, 107, 0, 0.6);
+.featured-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.15));
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  color: #60A5FA;
+  margin-bottom: 1.25rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Animations */
-@keyframes liquid-pulse {
-  0%, 100% {
-    opacity: 0.7;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
+.featured-card__icon svg {
+  width: 28px;
+  height: 28px;
 }
 
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  50%, 100% {
-    left: 200%;
-  }
+.featured-card:hover .featured-card__icon {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.3), rgba(129, 140, 248, 0.25));
+  border-color: rgba(96, 165, 250, 0.55);
+  color: #fff;
+  transform: scale(1.08) rotate(-3deg);
+  box-shadow: 0 10px 32px rgba(59, 130, 246, 0.4);
 }
 
-@keyframes float-icon {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-2px) scale(1.05);
-  }
+.featured-card__title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.4rem;
+  color: #fff;
 }
 
-/* Content fade animation */
-.fade-in {
-  animation: fadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+.featured-card__desc {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.featured-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent-glow);
+  transition: gap 0.3s;
 }
 
-/* Vue Transition for tab content */
+.featured-card__cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s;
+}
+
+.featured-card:hover .featured-card__cta {
+  gap: 0.85rem;
+}
+
+.featured-card:hover .featured-card__cta svg {
+  transform: translateX(3px);
+}
+
+/* ============================================ */
+/* CATEGORY BLOCK                               */
+/* ============================================ */
+.category-block {
+  margin-bottom: 3.5rem;
+}
+
+.category-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.category-head__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #60A5FA;
+}
+
+.category-head__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.category-head__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(96, 165, 250, 0.35), transparent);
+  transition: background 0.3s;
+}
+
+.team-t .category-head__line {
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.35), transparent);
+}
+
+.section-head__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent-glow);
+  margin-bottom: 0.75rem;
+  transition: color 0.3s;
+}
+
+.team-t .section-head__eyebrow {
+  color: #FCD34D;
+}
+
+.section-head__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-glow);
+  box-shadow: 0 0 8px var(--color-accent-glow);
+  animation: pulse-glow 2s ease-in-out infinite;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.team-t .section-head__dot {
+  background: #FCD34D;
+  box-shadow: 0 0 8px #FCD34D;
+}
+
+.category-head__count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================ */
+/* WEAPON GRID                                  */
+/* ============================================ */
+.weapons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.weapon-card {
+  padding: 1.25rem 1rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  cursor: pointer;
+}
+
+.weapon-card__img {
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weapon-card__img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.5));
+}
+
+.weapon-card:hover .weapon-card__img img {
+  transform: scale(1.08) translateY(-2px);
+}
+
+.weapon-card__name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-align: center;
+  letter-spacing: 0.02em;
+  transition: color 0.3s;
+}
+
+.weapon-card:hover .weapon-card__name {
+  color: #fff;
+}
+
+/* ============================================ */
+/* ARSENAL GRID (tab view)                      */
+/* ============================================ */
+.arsenal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.25rem;
+}
+
+.arsenal-card {
+  position: relative;
+  padding: 1.75rem 1.25rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.arsenal-card__shine {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.arsenal-card:hover .arsenal-card__shine {
+  opacity: 1;
+}
+
+.arsenal-card__img {
+  width: 100%;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.arsenal-card__img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6));
+}
+
+.arsenal-card__name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.03em;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================ */
+/* LOADING                                      */
+/* ============================================ */
+.loading-wrap {
+  text-align: center;
+  padding: 6rem 0;
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.loading-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #60A5FA;
+  animation: loading-bounce 1.2s ease-in-out infinite;
+  box-shadow: 0 0 14px rgba(96, 165, 250, 0.8);
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes loading-bounce {
+  0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
+  40%            { transform: scale(1);   opacity: 1; }
+}
+
+.loading-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ============================================ */
+/* TAB TRANSITION                               */
+/* ============================================ */
 .tab-fade-enter-active {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tab-fade-leave-active {
@@ -763,27 +1562,39 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
 
 .tab-fade-enter-from {
   opacity: 0;
-  transform: translateX(20px) scale(0.98);
+  transform: translateY(20px);
 }
 
 .tab-fade-leave-to {
   opacity: 0;
-  transform: translateX(-20px) scale(0.98);
+  transform: translateY(-20px);
 }
 
-/* Smooth content transitions */
-.tab-content-enter-active,
-.tab-content-leave-active {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+/* ============================================ */
+/* RESPONSIVE                                   */
+/* ============================================ */
+@media (max-width: 768px) {
+  .site-nav__inner { padding: 0.85rem 1rem; }
+  .site-nav__row { margin-bottom: 0.75rem; }
+  .brand__mark { width: 38px; height: 38px; }
+  .brand__title { font-size: 1.1rem; }
+  .brand__sub { display: none; }
 
-.tab-content-enter-from {
-  opacity: 0;
-  transform: translateX(30px) scale(0.98);
-}
+  .nav-tabs { gap: 0.35rem; overflow-x: auto; flex-wrap: nowrap; }
+  .nav-tab { padding: 0.5rem 0.85rem; font-size: 0.72rem; }
+  .nav-tabs__sep { display: none; }
 
-.tab-content-leave-to {
-  opacity: 0;
-  transform: translateX(-30px) scale(0.98);
+  .main-wrap { padding: 2.5rem 1rem 4rem; }
+
+  .hero { padding: 3rem 0.5rem 4rem; }
+  .hero__cta { flex-direction: column; }
+  .hero__stats { gap: 1.25rem; padding: 1rem 1.5rem; }
+  .stat__value { font-size: 1.4rem; }
+
+  .featured-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .featured-card { padding: 1.75rem; min-height: auto; }
+
+  .weapons-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  .arsenal-grid { grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
 }
 </style>
