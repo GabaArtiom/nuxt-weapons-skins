@@ -306,11 +306,13 @@ const currentSkin = computed(() => {
 const openCurrentSkinModal = () => {
   if (!currentSkin.value || !currentPlayerSkin.value) return
 
+  console.log('openCurrentSkinModal: weapon_stattrak =', currentPlayerSkin.value.weapon_stattrak, 'type:', typeof currentPlayerSkin.value.weapon_stattrak)
+
   selectedSkin.value = currentSkin.value
   floatValue.value = currentPlayerSkin.value.weapon_wear ?? 0.01
   seedValue.value = currentPlayerSkin.value.weapon_seed ?? 0
   nametag.value = currentPlayerSkin.value.weapon_nametag ?? ''
-  statTrak.value = currentPlayerSkin.value.weapon_stattrak ?? false
+  statTrak.value = !!currentPlayerSkin.value.weapon_stattrak
   showModal.value = true
   isUpdatingCurrent.value = true
 }
@@ -359,6 +361,8 @@ const openSkinModal = (skin: Skin) => {
 
 const saveSkinConfig = async (team: number) => {
   if (!selectedSkin.value) return
+
+  console.log('saveSkinConfig: statTrak value =', statTrak.value)
 
   saving.value = team
   try {
