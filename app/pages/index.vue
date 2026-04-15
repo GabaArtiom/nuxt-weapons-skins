@@ -209,7 +209,7 @@
                 <NuxtLink
                   v-for="(weapon, index) in weapons"
                   :key="weapon.id"
-                  :to="`/weapon/${weapon.id}`"
+                  :to="`/weapon/${getWeaponSlug(weapon.id)}`"
                   class="weapon-card glass-card stagger-item"
                   :style="{ animationDelay: `${index * 0.03}s` }"
                 >
@@ -230,13 +230,27 @@
           <!-- Tab view -->
           <div v-else>
             <div class="section-head scale-in">
-              <div class="section-head__eyebrow">
-                <button class="back-btn" @click="setActiveTab(null)">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-                  Назад
-                </button>
+              <div>
+                <div class="section-head__eyebrow">
+                  <button class="back-btn" @click="setActiveTab(null)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+                    Назад
+                  </button>
+                </div>
+                <h1 class="section-head__title gradient-text-primary">{{ tabTitles[activeTab] }}</h1>
               </div>
-              <h1 class="section-head__title gradient-text-primary">{{ tabTitles[activeTab] }}</h1>
+
+              <button @click="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
+                <div class="team-toggle__track">
+                  <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
+                  <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
+                    <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
+                  </div>
+                  <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
+                    <span class="team-toggle__badge team-toggle__badge--t">T</span>
+                  </div>
+                </div>
+              </button>
             </div>
 
             <Transition name="tab-fade" mode="out-in">
@@ -252,7 +266,7 @@
                   <NuxtLink
                     v-for="(knife, index) in knifeTypes"
                     :key="knife.weapon_id"
-                    :to="`/knife/${knife.weapon_id}`"
+                    :to="`/knife/${getKnifeSlug(knife.weapon_id)}`"
                     class="arsenal-card glass-card stagger-item shimmer-on-hover"
                     :style="{ animationDelay: `${index * 0.04}s` }"
                     @mouseenter="onKnifeHover($event, true)"
@@ -285,7 +299,7 @@
                   <NuxtLink
                     v-for="(glove, index) in gloveTypes"
                     :key="glove.weapon_id"
-                    :to="`/glove/${glove.weapon_id}`"
+                    :to="`/glove/${getGloveSlug(glove.weapon_id)}`"
                     class="arsenal-card glass-card stagger-item shimmer-on-hover"
                     :style="{ animationDelay: `${index * 0.04}s` }"
                     @mouseenter="onGloveHover($event, true)"
@@ -312,7 +326,7 @@
                   <NuxtLink
                     v-for="(weapon, index) in weaponsByCategory[activeTab]"
                     :key="weapon.id"
-                    :to="`/weapon/${weapon.id}`"
+                    :to="`/weapon/${getWeaponSlug(weapon.id)}`"
                     class="arsenal-card glass-card stagger-item"
                     :style="{ animationDelay: `${index * 0.03}s` }"
                   >
@@ -337,7 +351,9 @@
 </template>
 
 <script setup lang="ts">
-import { WEAPON_MAP, getWeaponCategory, getDefaultWeaponImage } from '~/utils/weapons'
+import { WEAPON_MAP, getWeaponCategory, getDefaultWeaponImage, getWeaponSlug } from '~/utils/weapons'
+import { getKnifeSlug } from '~/utils/knives'
+import { getGloveSlug } from '~/utils/gloves'
 import gsap from 'gsap'
 
 const route = useRoute()
@@ -1220,12 +1236,21 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.team-t .featured-card__preview {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(245, 158, 11, 0.05));
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
 .featured-card__preview img {
   width: 85%;
   height: 85%;
   object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3));
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s;
+}
+
+.team-t .featured-card__preview img {
+  filter: drop-shadow(0 4px 12px rgba(251, 191, 36, 0.3));
 }
 
 .featured-card:hover .featured-card__preview img {
@@ -1236,6 +1261,11 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   width: 48px;
   height: 48px;
   color: rgba(96, 165, 250, 0.25);
+  transition: color 0.3s;
+}
+
+.team-t .featured-card__preview-empty {
+  color: rgba(251, 191, 36, 0.25);
 }
 
 .featured-card__preview-empty svg {
@@ -1247,6 +1277,12 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   border-color: rgba(96, 165, 250, 0.4);
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.08));
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+.team-t .featured-card:hover .featured-card__preview {
+  border-color: rgba(251, 191, 36, 0.4);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(245, 158, 11, 0.08));
+  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.2);
 }
 
 .featured-card__icon {
@@ -1263,6 +1299,12 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.team-t .featured-card__icon {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.15));
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #FCD34D;
+}
+
 .featured-card__icon svg {
   width: 28px;
   height: 28px;
@@ -1274,6 +1316,12 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   color: #fff;
   transform: scale(1.08) rotate(-3deg);
   box-shadow: 0 10px 32px rgba(59, 130, 246, 0.4);
+}
+
+.team-t .featured-card:hover .featured-card__icon {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.25));
+  border-color: rgba(251, 191, 36, 0.55);
+  box-shadow: 0 10px 32px rgba(251, 191, 36, 0.4);
 }
 
 .featured-card__title {
@@ -1300,7 +1348,11 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-accent-glow);
-  transition: gap 0.3s;
+  transition: gap 0.3s, color 0.3s;
+}
+
+.team-t .featured-card__cta {
+  color: #FCD34D;
 }
 
 .featured-card__cta svg {
@@ -1336,6 +1388,11 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   height: 8px;
   border-radius: 50%;
   background: #60A5FA;
+  transition: background 0.3s;
+}
+
+.team-t .category-head__dot {
+  background: #FCD34D;
 }
 
 .category-head__title {
