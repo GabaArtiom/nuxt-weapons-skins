@@ -36,6 +36,58 @@ export const WEAPON_MAP: Record<number, string> = {
   64: 'R8 Revolver',
 }
 
+// Slug mapping for URLs
+export const WEAPON_SLUGS: Record<number, string> = {
+  1: 'desert-eagle',
+  2: 'dual-berettas',
+  3: 'five-seven',
+  4: 'glock-18',
+  7: 'ak-47',
+  8: 'aug',
+  9: 'awp',
+  10: 'famas',
+  11: 'g3sg1',
+  13: 'galil-ar',
+  14: 'm249',
+  16: 'm4a4',
+  17: 'mac-10',
+  19: 'p90',
+  23: 'mp5-sd',
+  24: 'ump-45',
+  25: 'xm1014',
+  26: 'pp-bizon',
+  27: 'mag-7',
+  28: 'negev',
+  29: 'sawed-off',
+  30: 'tec-9',
+  32: 'p2000',
+  33: 'mp7',
+  34: 'mp9',
+  35: 'nova',
+  36: 'p250',
+  38: 'scar-20',
+  39: 'sg-553',
+  40: 'ssg-08',
+  60: 'm4a1-s',
+  61: 'usp-s',
+  63: 'cz75-auto',
+  64: 'r8-revolver',
+}
+
+// Reverse mapping: slug → weapon_id
+export const WEAPON_SLUG_TO_ID: Record<string, number> = Object.entries(WEAPON_SLUGS).reduce((acc, [id, slug]) => {
+  acc[slug] = parseInt(id)
+  return acc
+}, {} as Record<string, number>)
+
+export function getWeaponSlug(weaponId: number): string | null {
+  return WEAPON_SLUGS[weaponId] || null
+}
+
+export function getWeaponIdFromSlug(slug: string): number | null {
+  return WEAPON_SLUG_TO_ID[slug] || null
+}
+
 // Маппинг weapon_defindex → weapon_name для дефолтных изображений
 export const WEAPON_NAME_MAP: Record<number, string> = {
   1: 'weapon_deagle',
