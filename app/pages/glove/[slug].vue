@@ -20,29 +20,116 @@
       </div>
     </header>
 
-    <main class="detail-main">
+    <main class="detail-main" :class="{ 'team-t': selectedTeam === 2 }">
       <div class="detail-head">
-        <NuxtLink to="/?tab=gloves" class="back-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-          Назад к перчаткам
-        </NuxtLink>
+        <div class="detail-head-left">
+          <NuxtLink to="/?tab=gloves" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            Назад к перчаткам
+          </NuxtLink>
 
-        <div class="detail-title-wrap">
-          <div class="detail-eyebrow">
-            <span class="detail-eyebrow__dot"></span>
-            Glove Skin Selection
+          <div class="detail-title-wrap">
+            <div class="detail-eyebrow">
+              <span class="detail-eyebrow__dot"></span>
+              Glove Skin Selection
+            </div>
+            <h1 class="detail-title gradient-text-primary">{{ gloveName }}</h1>
+            <p class="detail-sub">Выберите скин для этих перчаток. Настрой float и seed.</p>
           </div>
-          <h1 class="detail-title gradient-text-primary">{{ gloveName }}</h1>
-          <p class="detail-sub">Выберите скин для этих перчаток. Настрой float и seed.</p>
+        </div>
+
+        <div class="detail-head-actions">
+          <div class="search-box">
+            <svg class="search-box__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input v-model="searchQuery" placeholder="Поиск по названию" class="search-box__input" />
+          </div>
+
+          <div class="filter-dropdown">
+            <button @click="showRarityFilter = !showRarityFilter" class="filter-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h18M3 12h18M3 20h18"/></svg>
+              <span>{{ selectedRarity || 'Все редкости' }}</span>
+            </button>
+            <Transition name="dropdown">
+              <div v-if="showRarityFilter" class="filter-dropdown__menu">
+                <button @click="selectRarity(null)" class="filter-dropdown__item" :class="{ 'filter-dropdown__item--active': !selectedRarity }">Все редкости</button>
+                <button
+                  v-for="rarity in rarities" :key="rarity.name"
+                  @click="selectRarity(rarity.name)"
+                  class="filter-dropdown__item"
+                  :class="{ 'filter-dropdown__item--active': selectedRarity === rarity.name }"
+                  :style="{ '--rarity-color': rarity.color }"
+                >
+                  <span class="filter-dropdown__dot"></span>
+                  {{ rarity.name }}
+                </button>
+              </div>
+            </Transition>
+          </div>
         </div>
       </div>
 
-      <div class="detail-filter glass">
-        <SkinFilter
-          v-model:search="searchQuery"
-          v-model:rarity="selectedRarity"
-          v-model:stattrak="showStatTrak"
-        />
+      <div class="current-skin-section">
+        <div class="current-skin-wrapper">
+          <button @click="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
+            <div class="team-toggle__track">
+              <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
+              <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
+                <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
+              </div>
+              <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
+                <span class="team-toggle__badge team-toggle__badge--t">T</span>
+              </div>
+            </div>
+          </button>
+
+          <div
+            class="current-skin-block glass-card"
+            :class="{ 'current-skin-block--clickable': currentSkin }"
+            :style="currentSkin ? { '--rarity-color': currentSkin.rarity.color } : {}"
+            @click="currentSkin && openCurrentSkinModal()"
+          >
+            <div v-if="currentSkin" class="current-skin-content">
+              <div class="current-skin-image">
+                <img :src="currentSkin.image" :alt="currentSkin.name" />
+              </div>
+              <div class="current-skin-info">
+                <div class="current-skin-name">{{ currentSkin.name }}</div>
+                <div class="current-skin-rarity" :style="{ color: currentSkin.rarity.color }">
+                  {{ currentSkin.rarity.name }}
+                </div>
+                <div class="current-skin-stats">
+                  <div v-if="currentPlayerSkin?.weapon_wear !== null" class="current-skin-stat">
+                    <span class="current-skin-stat__label">Float:</span>
+                    <span class="current-skin-stat__value">{{ currentPlayerSkin.weapon_wear?.toFixed(4) }}</span>
+                  </div>
+                  <div v-if="currentPlayerSkin?.weapon_seed !== null" class="current-skin-stat">
+                    <span class="current-skin-stat__label">Seed:</span>
+                    <span class="current-skin-stat__value">{{ currentPlayerSkin.weapon_seed }}</span>
+                  </div>
+                  <div v-if="currentPlayerSkin?.weapon_nametag" class="current-skin-stat">
+                    <span class="current-skin-stat__label">Name:</span>
+                    <span class="current-skin-stat__value">{{ currentPlayerSkin.weapon_nametag }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else class="current-skin-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+              </svg>
+              <span>Скин не выбран</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-filter glass">
+          <SkinFilter
+            v-model:search="searchQuery"
+            v-model:rarity="selectedRarity"
+          />
+        </div>
       </div>
 
       <ClientOnly>
@@ -123,7 +210,7 @@
                   />
                 </div>
 
-                <div class="modal__actions">
+                <div class="modal__actions" v-if="!isUpdatingCurrent">
                   <button
                     @click="saveSkinConfig(3)"
                     :disabled="!!saving"
@@ -139,6 +226,19 @@
                   >
                     <span class="team-btn__badge">T</span>
                     <span>{{ saving === 2 ? 'Сохранение…' : 'Сохранить для T' }}</span>
+                  </button>
+                </div>
+
+                <div class="modal__actions modal__actions--single" v-else>
+                  <button
+                    @click="saveSkinConfig(selectedTeam)"
+                    :disabled="!!saving"
+                    class="team-btn team-btn--update"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"/>
+                    </svg>
+                    <span>{{ saving ? 'Обновление…' : 'Обновить скин' }}</span>
                   </button>
                 </div>
               </div>
@@ -163,16 +263,33 @@ const gloveId = computed(() => {
 })
 
 const { skins, loading, fetchSkins } = useSkinsData()
-const { saveSkin } = usePlayerSkins()
+const { playerSkins, fetchPlayerSkins, saveSkin } = usePlayerSkins()
 
 // Redirect if not authenticated
 if (process.client && !user.value.authenticated) {
   navigateTo('/')
 }
 
+const selectedTeam = ref<2 | 3>(3) // 3 = CT (default)
+
 const searchQuery = ref('')
 const selectedRarity = ref<string | null>(null)
-const showStatTrak = ref(false)
+const showRarityFilter = ref(false)
+
+const rarities = [
+  { name: 'Consumer Grade', color: '#b0c3d9' },
+  { name: 'Industrial Grade', color: '#5e98d9' },
+  { name: 'Mil-Spec Grade', color: '#4b69ff' },
+  { name: 'Restricted', color: '#8847ff' },
+  { name: 'Classified', color: '#d32ce6' },
+  { name: 'Covert', color: '#eb4b4b' },
+  { name: 'Contraband', color: '#e4ae39' },
+]
+
+const selectRarity = (name: string | null) => {
+  selectedRarity.value = name
+  showRarityFilter.value = false
+}
 
 const showModal = ref(false)
 const selectedSkin = ref<Skin | null>(null)
@@ -180,9 +297,11 @@ const floatValue = ref(0.01)
 const seedValue = ref(0)
 const nametag = ref('')
 const saving = ref<number | false>(false)
+const isUpdatingCurrent = ref(false)
 
 onMounted(async () => {
   await fetchSkins()
+  await fetchPlayerSkins()
 })
 
 const gloveSkins = computed(() => {
@@ -191,6 +310,21 @@ const gloveSkins = computed(() => {
     (skin) =>
       skin.weapon?.weapon_id === gloveId.value &&
       skin.category?.id === 'sfui_invpanel_filter_gloves'
+  )
+})
+
+const currentPlayerSkin = computed(() => {
+  if (!gloveId.value) return null
+  return playerSkins.value.find(
+    ps => ps.weapon_defindex === gloveId.value && ps.weapon_team === selectedTeam.value
+  )
+})
+
+const currentSkin = computed(() => {
+  if (!currentPlayerSkin.value || !currentPlayerSkin.value.weapon_paint_id) return null
+
+  return gloveSkins.value.find(
+    s => parseInt(s.paint_index) === currentPlayerSkin.value!.weapon_paint_id
   )
 })
 
@@ -222,10 +356,6 @@ const filteredSkins = computed(() => {
     result = result.filter((skin) => skin.rarity.name === selectedRarity.value)
   }
 
-  if (showStatTrak.value) {
-    result = result.filter((skin) => skin.stattrak)
-  }
-
   result = [...result].sort((a, b) => {
     const orderA = rarityOrder[a.rarity.name] || 0
     const orderB = rarityOrder[b.rarity.name] || 0
@@ -241,6 +371,18 @@ const openSkinModal = (skin: Skin) => {
   seedValue.value = 0
   nametag.value = ''
   showModal.value = true
+  isUpdatingCurrent.value = false
+}
+
+const openCurrentSkinModal = () => {
+  if (!currentSkin.value || !currentPlayerSkin.value) return
+
+  selectedSkin.value = currentSkin.value
+  floatValue.value = currentPlayerSkin.value.weapon_wear ?? 0.01
+  seedValue.value = currentPlayerSkin.value.weapon_seed ?? 0
+  nametag.value = currentPlayerSkin.value.weapon_nametag ?? ''
+  showModal.value = true
+  isUpdatingCurrent.value = true
 }
 
 const saveSkinConfig = async (team: number) => {
@@ -310,6 +452,7 @@ const saveSkinConfig = async (team: number) => {
 
 .back-btn {
   display: inline-flex; align-items: center; gap: 0.5rem;
+  width: fit-content;
   padding: 0.5rem 0.9rem; border-radius: 10px;
   font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
   color: var(--color-text-secondary);
@@ -520,6 +663,11 @@ const saveSkinConfig = async (team: number) => {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 0.75rem; margin-top: 0.5rem;
 }
+
+.modal__actions--single {
+  grid-template-columns: 1fr;
+}
+
 .team-btn {
   position: relative; display: inline-flex;
   align-items: center; justify-content: center; gap: 0.65rem;
@@ -529,6 +677,21 @@ const saveSkinConfig = async (team: number) => {
   border: 1px solid rgba(255, 255, 255, 0.12);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
+.team-btn--update {
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+  box-shadow: 0 10px 28px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.team-btn--update svg {
+  width: 18px;
+  height: 18px;
+}
+
+.team-btn--update:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(96, 165, 250, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
 .team-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .team-btn__badge {
   display: inline-flex; align-items: center; justify-content: center;
@@ -554,6 +717,123 @@ const saveSkinConfig = async (team: number) => {
   box-shadow: 0 12px 32px rgba(59, 130, 246, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
+/* Current Skin Section */
+.current-skin-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.current-skin-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.current-skin-block {
+  padding: 2rem;
+  border-radius: 18px;
+  transition: all 0.3s;
+}
+
+.current-skin-block--clickable {
+  cursor: pointer;
+}
+
+.current-skin-block--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -8px rgba(59, 130, 246, 0.3);
+}
+
+.team-t .current-skin-block--clickable:hover {
+  box-shadow: 0 12px 32px -8px rgba(251, 191, 36, 0.3);
+}
+
+.current-skin-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.current-skin-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.current-skin-image img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px var(--rarity-color, rgba(59, 130, 246, 0.4)));
+}
+
+.current-skin-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.current-skin-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.current-skin-rarity {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.current-skin-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.current-skin-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.current-skin-stat__label {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.current-skin-stat__value {
+  color: #fff;
+  font-weight: 600;
+}
+
+.current-skin-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
+}
+
+.current-skin-empty svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.3;
+}
+
+.current-skin-empty span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 .modal-enter-active, .modal-leave-active { transition: opacity 0.3s; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
 .modal-enter-active .modal, .modal-leave-active .modal {
@@ -562,6 +842,125 @@ const saveSkinConfig = async (team: number) => {
 .modal-enter-from .modal, .modal-leave-to .modal {
   transform: scale(0.92) translateY(20px); opacity: 0;
 }
+
+/* Detail Head Actions */
+.detail-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.detail-head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.detail-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.search-box { position: relative; }
+
+.search-box__icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.search-box__input {
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 0.85rem;
+  outline: none;
+  width: 220px;
+  transition: all 0.25s;
+}
+
+.search-box__input::placeholder { color: var(--color-text-muted); }
+
+.search-box__input:focus {
+  border-color: rgba(96, 165, 250, 0.4);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.filter-dropdown { position: relative; }
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s;
+}
+
+.filter-btn svg { width: 16px; height: 16px; }
+.filter-btn:hover { border-color: rgba(96, 165, 250, 0.3); color: #fff; }
+
+.filter-dropdown__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 200px;
+  background: rgba(10, 15, 31, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.5rem;
+  z-index: 50;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.filter-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.filter-dropdown__item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+.filter-dropdown__item--active { color: #fff; background: rgba(59, 130, 246, 0.1); }
+
+.filter-dropdown__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rarity-color, #fff);
+  box-shadow: 0 0 6px var(--rarity-color, transparent);
+  flex-shrink: 0;
+}
+
+.dropdown-enter-active, .dropdown-leave-active { transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.dropdown-enter-from, .dropdown-leave-to { opacity: 0; transform: translateY(-8px) scale(0.97); }
 
 @media (max-width: 640px) {
   .detail-nav__inner { padding: 0.85rem 1rem; }
