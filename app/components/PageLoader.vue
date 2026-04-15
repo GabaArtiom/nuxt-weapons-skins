@@ -117,7 +117,10 @@ onMounted(() => {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: linear-gradient(135deg, #0a0e14 0%, #1a1f2e 100%);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 30%, rgba(59, 130, 246, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 80%, rgba(99, 102, 241, 0.18) 0%, transparent 55%),
+    linear-gradient(135deg, #0A0F1F 0%, #0F172A 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,10 +132,12 @@ onMounted(() => {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 107, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 107, 0, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
-  opacity: 0.5;
+    linear-gradient(rgba(96, 165, 250, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 165, 250, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.6;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
 }
 
 /* Single energy ring */
@@ -143,10 +148,11 @@ onMounted(() => {
   transform: translate(-50%, -50%);
   width: 100px;
   height: 100px;
-  border: 2px solid var(--color-accent-primary);
+  border: 2px solid rgba(96, 165, 250, 0.8);
   border-radius: 50%;
   animation: ringPulse 2s ease-out infinite;
-  opacity: 0.3;
+  opacity: 0.4;
+  box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
 }
 
 @keyframes ringPulse {
@@ -188,9 +194,13 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   fill: none;
-  stroke: var(--color-accent-primary);
+  stroke: url(#crosshair-gradient);
   stroke-width: 2;
-  filter: drop-shadow(0 0 20px rgba(255, 107, 0, 0.8));
+  filter: drop-shadow(0 0 24px rgba(96, 165, 250, 0.9));
+}
+
+.crosshair-svg .crosshair-path {
+  stroke: #60A5FA;
 }
 
 .crosshair-path {
@@ -202,11 +212,11 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(circle, rgba(255, 107, 0, 0.4) 0%, transparent 70%);
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.45) 0%, rgba(59, 130, 246, 0.25) 40%, transparent 70%);
   border-radius: 50%;
-  filter: blur(40px);
+  filter: blur(50px);
   z-index: 1;
 }
 
@@ -222,15 +232,11 @@ onMounted(() => {
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(90deg,
-    var(--color-accent-primary),
-    #fbbf24,
-    var(--color-accent-primary)
-  );
+  background: linear-gradient(90deg, #3B82F6, #6366F1, #22D3EE, #3B82F6);
   background-size: 200% 100%;
   animation: progressShine 1.5s linear infinite;
   border-radius: 2px;
-  box-shadow: 0 0 15px rgba(255, 107, 0, 0.6);
+  box-shadow: 0 0 18px rgba(96, 165, 250, 0.7);
   width: 0;
 }
 
@@ -246,7 +252,7 @@ onMounted(() => {
   top: 0;
   width: 50%;
   height: 100%;
-  background: linear-gradient(135deg, #0a0e14 0%, #1a1f2e 100%);
+  background: linear-gradient(135deg, #0A0F1F 0%, #0F172A 100%);
   z-index: 10;
 }
 
