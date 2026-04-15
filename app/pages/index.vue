@@ -1048,6 +1048,7 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  width: fit-content;
   padding: 0.45rem 0.85rem;
   border-radius: 10px;
   font-size: 0.72rem;
