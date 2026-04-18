@@ -1,14 +1,14 @@
 // Glove slugs for URLs
 export const GLOVE_SLUGS: Record<number, string> = {
+  4725: 'broken-fang',
   5027: 'studded-bloodhound',
   5028: 'default-gloves',
-  5029: 'studded-hydra',
   5030: 'slick',
   5031: 'leather-handwraps',
   5032: 'motorcycle',
   5033: 'specialist',
   5034: 'studded-sport',
-  5035: 'broken-fang',
+  5035: 'studded-hydra',
 }
 
 // Reverse mapping: slug → weapon_id
