@@ -179,11 +179,6 @@ const knifeId = computed(() => {
 const { skins, loading, fetchSkins } = useSkinsData()
 const { playerSkins, fetchPlayerSkins, saveSkin } = usePlayerSkins()
 
-// Redirect if not authenticated
-if (process.client && !user.value.authenticated) {
-  navigateTo('/')
-}
-
 const selectedTeam = ref<2 | 3>(3) // 3 = CT (default)
 
 const searchQuery = ref('')

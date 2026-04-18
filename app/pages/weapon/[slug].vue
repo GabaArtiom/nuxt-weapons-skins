@@ -179,11 +179,6 @@ const weaponName = computed(() => weaponId.value ? getWeaponName(weaponId.value)
 const { skins, loading, fetchSkins, getSkinsByWeapon } = useSkinsData()
 const { playerSkins, fetchPlayerSkins, saveSkin } = usePlayerSkins()
 
-// Redirect if not authenticated
-if (process.client && !user.value.authenticated) {
-  navigateTo('/')
-}
-
 const selectedTeam = ref<2 | 3>(3) // 3 = CT (default)
 
 const searchQuery = ref('')
