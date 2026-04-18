@@ -179,21 +179,6 @@ const weaponName = computed(() => weaponId.value ? getWeaponName(weaponId.value)
 const { skins, loading, fetchSkins, getSkinsByWeapon } = useSkinsData()
 const { playerSkins, fetchPlayerSkins, saveSkin } = usePlayerSkins()
 
-// Check authentication after user data loads
-const authChecked = ref(false)
-watchEffect(() => {
-  if (process.client && !authChecked.value) {
-    // Wait for initial auth check to complete
-    if (user.value.authenticated === false && user.value.steamid === null) {
-      // User data loaded and not authenticated
-      navigateTo('/')
-    } else if (user.value.authenticated) {
-      // User is authenticated
-      authChecked.value = true
-    }
-  }
-})
-
 const selectedTeam = ref<2 | 3>(3) // 3 = CT (default)
 
 const searchQuery = ref('')
@@ -218,6 +203,14 @@ const backUrl = computed(() => {
 
 onMounted(async () => {
   console.log('onMounted: starting data fetch')
+  await fetchUser()
+
+  // Check authentication
+  if (!user.value.authenticated) {
+    navigateTo('/')
+    return
+  }
+
   await fetchSkins()
   console.log('onMounted: skins fetched, now fetching player skins')
   await fetchPlayerSkins()
