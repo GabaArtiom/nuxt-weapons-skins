@@ -120,6 +120,13 @@
   transition: all 0.25s;
 }
 
+.team-toggle__badge svg,
+.team-toggle__badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .team-toggle__badge--t {
   background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.15));
   border: 1px solid rgba(251, 191, 36, 0.3);
