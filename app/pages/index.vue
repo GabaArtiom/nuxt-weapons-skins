@@ -500,40 +500,65 @@ const getGloveImage = (weaponId: number) => {
 }
 
 const equippedKnifeImage = computed(() => {
-  // Найти любой нож для выбранной команды из playerSkins
-  const knifeSkin = playerSkins.value.find(ps => {
-    // Ножи имеют weapon_defindex >= 500 и <= 525
-    return ps.weapon_defindex >= 500 &&
-           ps.weapon_defindex <= 525 &&
-           ps.weapon_team === selectedTeam.value &&
-           ps.weapon_paint_id
-  })
+  // Получить активный нож для выбранной команды
+  const activeKnifeName = selectedTeam.value === 2 ? activeKnife.value.knife_t : activeKnife.value.knife_ct
+  if (!activeKnifeName) return ''
+
+  // Найти weapon_id по имени ножа
+  const KNIFE_MAP: Record<string, number> = {
+    'weapon_bayonet': 500,
+    'weapon_knife_css': 503,
+    'weapon_knife_flip': 505,
+    'weapon_knife_gut': 506,
+    'weapon_knife_karambit': 507,
+    'weapon_knife_m9_bayonet': 508,
+    'weapon_knife_tactical': 509,
+    'weapon_knife_falchion': 512,
+    'weapon_knife_survival_bowie': 514,
+    'weapon_knife_butterfly': 515,
+    'weapon_knife_push': 516,
+    'weapon_knife_cord': 517,
+    'weapon_knife_canis': 518,
+    'weapon_knife_ursus': 519,
+    'weapon_knife_gypsy_jackknife': 520,
+    'weapon_knife_outdoor': 521,
+    'weapon_knife_stiletto': 522,
+    'weapon_knife_widowmaker': 523,
+    'weapon_knife_skeleton': 525,
+  }
+  const weaponDefindex = KNIFE_MAP[activeKnifeName]
+  if (!weaponDefindex) return ''
+
+  // Найти скин для этого конкретного ножа и команды
+  const knifeSkin = playerSkins.value.find(ps =>
+    ps.weapon_defindex === weaponDefindex && ps.weapon_team === selectedTeam.value
+  )
 
   if (!knifeSkin || !knifeSkin.weapon_paint_id) return ''
 
-  // Найти скин по paint_id и weapon_defindex
+  // Найти изображение скина
   const skin = skins.value.find(
-    s => s.weapon?.weapon_id === knifeSkin.weapon_defindex &&
+    s => s.weapon?.weapon_id === weaponDefindex &&
          parseInt(s.paint_index) === knifeSkin.weapon_paint_id
   )
   return skin?.image || ''
 })
 
 const equippedGloveImage = computed(() => {
-  // Найти любые перчатки для выбранной команды из playerSkins
-  const gloveSkin = playerSkins.value.find(ps => {
-    // Перчатки имеют weapon_defindex >= 5027 и <= 5036
-    return ps.weapon_defindex >= 5027 &&
-           ps.weapon_defindex <= 5036 &&
-           ps.weapon_team === selectedTeam.value &&
-           ps.weapon_paint_id
-  })
+  // Получить активные перчатки для выбранной команды
+  const activeGloveDefindex = selectedTeam.value === 2 ? activeGloves.value.gloves_t : activeGloves.value.gloves_ct
+  if (!activeGloveDefindex) return ''
+
+  // Найти скин для этих конкретных перчаток и команды
+  const gloveSkin = playerSkins.value.find(ps =>
+    ps.weapon_defindex === activeGloveDefindex && ps.weapon_team === selectedTeam.value
+  )
 
   if (!gloveSkin || !gloveSkin.weapon_paint_id) return ''
 
-  // Найти скин по paint_id и weapon_defindex
+  // Найти изображение скина
   const skin = skins.value.find(
-    s => s.weapon?.weapon_id === gloveSkin.weapon_defindex &&
+    s => s.weapon?.weapon_id === activeGloveDefindex &&
          parseInt(s.paint_index) === gloveSkin.weapon_paint_id
   )
   return skin?.image || ''
