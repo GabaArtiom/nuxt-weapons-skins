@@ -25,7 +25,6 @@
       <div class="skin-card__name">{{ skin.name }}</div>
       <div class="skin-card__meta">
         <span class="skin-card__rarity">{{ skin.rarity.name }}</span>
-        <span v-if="skin.stattrak" class="skin-card__stattrak">StatTrak™</span>
       </div>
       <div
         v-if="skin.min_float != null && skin.max_float != null"
@@ -165,7 +164,6 @@ const isHovered = ref(false)
 .skin-card__meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
 }
 
