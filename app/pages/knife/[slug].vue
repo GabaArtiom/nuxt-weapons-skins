@@ -169,7 +169,7 @@ import type { Skin } from '~/utils/skins'
 import { getKnifeIdFromSlug } from '~/utils/knives'
 
 const route = useRoute()
-const { user } = useSteamAuth()
+const { user, fetchUser } = useSteamAuth()
 
 const knifeId = computed(() => {
   const slug = route.params.slug as string

@@ -161,7 +161,7 @@ import type { Skin } from '~/utils/skins'
 import { getGloveIdFromSlug } from '~/utils/gloves'
 
 const route = useRoute()
-const { user } = useSteamAuth()
+const { user, fetchUser } = useSteamAuth()
 
 const gloveId = computed(() => {
   const slug = route.params.slug as string

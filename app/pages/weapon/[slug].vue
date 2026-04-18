@@ -168,7 +168,7 @@ import { getWeaponName, getWeaponCategory, getWeaponIdFromSlug } from '~/utils/w
 import type { Skin } from '~/utils/skins'
 
 const route = useRoute()
-const { user } = useSteamAuth()
+const { user, fetchUser } = useSteamAuth()
 
 const weaponId = computed(() => {
   const slug = route.params.slug as string
