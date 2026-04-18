@@ -21,36 +21,15 @@
     </header>
 
     <main class="detail-main" :class="{ 'team-t': selectedTeam === 2 }">
-      <div class="detail-head">
-        <div class="detail-head-left">
-          <NuxtLink to="/?tab=knives" class="back-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-            Назад к ножам
-          </NuxtLink>
-
-          <div class="detail-title-wrap">
-            <div class="detail-eyebrow">
-              <span class="detail-eyebrow__dot"></span>
-              Knife Skin Selection
-            </div>
-            <h1 class="detail-title gradient-text-primary">{{ knifeName }}</h1>
-            <p class="detail-sub">Выберите скин для этого ножа. Настрой float, seed и StatTrak.</p>
-          </div>
-        </div>
-
-        <div class="detail-head-actions">
-          <div class="search-box">
-            <svg class="search-box__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              v-model="searchQuery"
-              placeholder="Поиск по названию"
-              class="search-box__input"
-            />
-          </div>
-        </div>
-      </div>
+      <DetailPageHeader
+        :title="knifeName"
+        eyebrow="Knife Skin Selection"
+        back-url="/?tab=knives"
+        back-text="Назад к ножам"
+        :show-rarity-filter="false"
+        v-model:search="searchQuery"
+        v-model:rarity="selectedRarity"
+      />
 
       <div class="current-skin-section">
         <div class="current-skin-wrapper">
@@ -214,22 +193,6 @@ const selectedTeam = ref<2 | 3>(3) // 3 = CT (default)
 
 const searchQuery = ref('')
 const selectedRarity = ref<string | null>(null)
-const showRarityFilter = ref(false)
-
-const rarities = [
-  { name: 'Consumer Grade', color: '#b0c3d9' },
-  { name: 'Industrial Grade', color: '#5e98d9' },
-  { name: 'Mil-Spec Grade', color: '#4b69ff' },
-  { name: 'Restricted', color: '#8847ff' },
-  { name: 'Classified', color: '#d32ce6' },
-  { name: 'Covert', color: '#eb4b4b' },
-  { name: 'Contraband', color: '#e4ae39' },
-]
-
-const selectRarity = (name: string | null) => {
-  selectedRarity.value = name
-  showRarityFilter.value = false
-}
 
 const showModal = ref(false)
 const selectedSkin = ref<Skin | null>(null)
