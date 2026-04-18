@@ -404,22 +404,16 @@
               <span class="stattrak-toggle__label">Включить StatTrak™</span>
             </label>
 
-            <div class="modal__actions">
+            <div class="modal__actions modal__actions--single">
               <button
-                @click="saveModalSkin(3)"
+                @click="saveModalSkin(selectedTeam)"
                 :disabled="!!saving"
-                class="team-btn team-btn--ct"
+                class="team-btn team-btn--update"
               >
-                <span class="team-btn__badge">CT</span>
-                <span>{{ saving === 3 ? 'Сохранение…' : 'Обновить для CT' }}</span>
-              </button>
-              <button
-                @click="saveModalSkin(2)"
-                :disabled="!!saving"
-                class="team-btn team-btn--t"
-              >
-                <span class="team-btn__badge">T</span>
-                <span>{{ saving === 2 ? 'Сохранение…' : 'Обновить для T' }}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"/>
+                </svg>
+                <span>{{ saving ? 'Обновление…' : 'Обновить скин' }}</span>
               </button>
             </div>
           </div>
@@ -1960,6 +1954,10 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   gap: 0.75rem; margin-top: 0.5rem;
 }
 
+.modal__actions--single {
+  grid-template-columns: 1fr;
+}
+
 .team-btn {
   position: relative; display: inline-flex;
   align-items: center; justify-content: center; gap: 0.65rem;
@@ -1978,6 +1976,21 @@ const onGloveHover = (event: MouseEvent, isEnter: boolean) => {
   font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(4px);
+}
+
+.team-btn--update {
+  background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+  box-shadow: 0 10px 28px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.team-btn--update svg {
+  width: 18px;
+  height: 18px;
+}
+
+.team-btn--update:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(96, 165, 250, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .team-btn--t {
