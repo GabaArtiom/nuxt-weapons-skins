@@ -241,7 +241,6 @@
                   :player-skin="activeKnifePlayerSkin"
                   v-model:team="selectedTeam"
                   :show-team-toggle="false"
-                  @click="navigateToActiveKnife"
                 />
 
                 <div v-if="loading" class="loading-wrap">
@@ -282,7 +281,6 @@
                   :player-skin="activeGlovePlayerSkin"
                   v-model:team="selectedTeam"
                   :show-team-toggle="false"
-                  @click="navigateToActiveGlove"
                 />
 
                 <div v-if="loading" class="loading-wrap">
