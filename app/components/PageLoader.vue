@@ -45,13 +45,13 @@ onMounted(() => {
     transformPerspective: 1000,
   })
 
-  // Crosshair container появляется с вращением (быстрее и плавнее)
+  // Crosshair container появляется с вращением
   tl.from(crosshairContainer.value, {
-    scale: 0.5,
-    rotation: -180,
+    scale: 0.3,
+    rotation: -360,
     opacity: 0,
-    duration: 0.6,
-    ease: 'back.out(1.4)',
+    duration: 1,
+    ease: 'back.out(1.7)',
   })
 
   // Рисуем путь прицела (оптимизировано)
@@ -65,39 +65,39 @@ onMounted(() => {
 
     tl.to(crosshairPath.value, {
       strokeDashoffset: 0,
-      duration: 0.8,
-      ease: 'power2.out',
-    }, '-=0.3')
+      duration: 1.5,
+      ease: 'power2.inOut',
+    }, '-=0.5')
   }
 
   // Пульсация свечения
   tl.to(crosshairGlow.value, {
-    scale: 1.15,
-    opacity: 0.7,
-    duration: 0.6,
+    scale: 1.2,
+    opacity: 0.8,
+    duration: 0.8,
     yoyo: true,
     repeat: -1,
     ease: 'sine.inOut',
     force3D: true,
-  }, '-=0.2')
+  }, '-=0.5')
 
   // Пульсация самого прицела
   tl.to(crosshairSvg.value, {
-    scale: 1.03,
-    duration: 0.6,
+    scale: 1.05,
+    duration: 0.8,
     yoyo: true,
     repeat: -1,
     ease: 'sine.inOut',
     force3D: true,
   }, '<')
 
-  // Закрытие через 1.5 секунды
+  // Закрытие через 2 секунды
   setTimeout(() => {
     // Fade out контента
     gsap.to('.loader-content', {
       opacity: 0,
       scale: 0.95,
-      duration: 0.4,
+      duration: 0.5,
       ease: 'power2.in',
       force3D: true,
     })
@@ -105,21 +105,21 @@ onMounted(() => {
     // Шторки разъезжаются
     gsap.to(curtainLeft.value, {
       x: '-100%',
-      duration: 0.6,
-      ease: 'power2.in',
+      duration: 0.8,
+      ease: 'back.in(1.2)',
       force3D: true,
     })
 
     gsap.to(curtainRight.value, {
       x: '100%',
-      duration: 0.6,
-      ease: 'power2.in',
+      duration: 0.8,
+      ease: 'back.in(1.2)',
       force3D: true,
       onComplete: () => {
         isLoading.value = false
       },
     })
-  }, 1500)
+  }, 2000)
 })
 </script>
 
