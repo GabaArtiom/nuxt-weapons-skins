@@ -236,6 +236,13 @@
             <Transition name="tab-fade" mode="out-in">
               <!-- Knives -->
               <div v-if="activeTab === 'knives'" key="knives">
+                <CurrentSkinSection
+                  :skin="activeKnifeSkin"
+                  :player-skin="activeKnifePlayerSkin"
+                  v-model:team="selectedTeam"
+                  @click="navigateToActiveKnife"
+                />
+
                 <div v-if="loading" class="loading-wrap">
                   <div class="loading-dots">
                     <span></span><span></span><span></span>
@@ -269,6 +276,13 @@
 
               <!-- Gloves -->
               <div v-else-if="activeTab === 'gloves'" key="gloves">
+                <CurrentSkinSection
+                  :skin="activeGloveSkin"
+                  :player-skin="activeGlovePlayerSkin"
+                  v-model:team="selectedTeam"
+                  @click="navigateToActiveGlove"
+                />
+
                 <div v-if="loading" class="loading-wrap">
                   <div class="loading-dots">
                     <span></span><span></span><span></span>
@@ -563,6 +577,107 @@ const equippedGloveImage = computed(() => {
   )
   return skin?.image || ''
 })
+
+// Active knife for CurrentSkinSection in knives tab
+const activeKnifePlayerSkin = computed(() => {
+  const activeKnifeName = selectedTeam.value === 2 ? activeKnife.value.knife_t : activeKnife.value.knife_ct
+  if (!activeKnifeName) return null
+
+  const KNIFE_MAP: Record<string, number> = {
+    'weapon_bayonet': 500,
+    'weapon_knife_css': 503,
+    'weapon_knife_flip': 505,
+    'weapon_knife_gut': 506,
+    'weapon_knife_karambit': 507,
+    'weapon_knife_m9_bayonet': 508,
+    'weapon_knife_tactical': 509,
+    'weapon_knife_falchion': 512,
+    'weapon_knife_survival_bowie': 514,
+    'weapon_knife_butterfly': 515,
+    'weapon_knife_push': 516,
+    'weapon_knife_cord': 517,
+    'weapon_knife_canis': 518,
+    'weapon_knife_ursus': 519,
+    'weapon_knife_gypsy_jackknife': 520,
+    'weapon_knife_outdoor': 521,
+    'weapon_knife_stiletto': 522,
+    'weapon_knife_widowmaker': 523,
+    'weapon_knife_skeleton': 525,
+  }
+  const weaponDefindex = KNIFE_MAP[activeKnifeName]
+  if (!weaponDefindex) return null
+
+  return playerSkins.value.find(ps =>
+    ps.weapon_defindex === weaponDefindex && ps.weapon_team === selectedTeam.value
+  ) || null
+})
+
+const activeKnifeSkin = computed(() => {
+  if (!activeKnifePlayerSkin.value || !activeKnifePlayerSkin.value.weapon_paint_id) return null
+
+  return skins.value.find(
+    s => s.weapon?.weapon_id === activeKnifePlayerSkin.value!.weapon_defindex &&
+         parseInt(s.paint_index) === activeKnifePlayerSkin.value!.weapon_paint_id
+  ) || null
+})
+
+// Active glove for CurrentSkinSection in gloves tab
+const activeGlovePlayerSkin = computed(() => {
+  const activeGloveDefindex = selectedTeam.value === 2 ? activeGloves.value.gloves_t : activeGloves.value.gloves_ct
+  if (!activeGloveDefindex) return null
+
+  return playerSkins.value.find(ps =>
+    ps.weapon_defindex === activeGloveDefindex && ps.weapon_team === selectedTeam.value
+  ) || null
+})
+
+const activeGloveSkin = computed(() => {
+  if (!activeGlovePlayerSkin.value || !activeGlovePlayerSkin.value.weapon_paint_id) return null
+
+  return skins.value.find(
+    s => s.weapon?.weapon_id === activeGlovePlayerSkin.value!.weapon_defindex &&
+         parseInt(s.paint_index) === activeGlovePlayerSkin.value!.weapon_paint_id
+  ) || null
+})
+
+// Navigation functions
+const navigateToActiveKnife = () => {
+  const activeKnifeName = selectedTeam.value === 2 ? activeKnife.value.knife_t : activeKnife.value.knife_ct
+  if (!activeKnifeName) return
+
+  const KNIFE_MAP: Record<string, number> = {
+    'weapon_bayonet': 500,
+    'weapon_knife_css': 503,
+    'weapon_knife_flip': 505,
+    'weapon_knife_gut': 506,
+    'weapon_knife_karambit': 507,
+    'weapon_knife_m9_bayonet': 508,
+    'weapon_knife_tactical': 509,
+    'weapon_knife_falchion': 512,
+    'weapon_knife_survival_bowie': 514,
+    'weapon_knife_butterfly': 515,
+    'weapon_knife_push': 516,
+    'weapon_knife_cord': 517,
+    'weapon_knife_canis': 518,
+    'weapon_knife_ursus': 519,
+    'weapon_knife_gypsy_jackknife': 520,
+    'weapon_knife_outdoor': 521,
+    'weapon_knife_stiletto': 522,
+    'weapon_knife_widowmaker': 523,
+    'weapon_knife_skeleton': 525,
+  }
+  const weaponDefindex = KNIFE_MAP[activeKnifeName]
+  if (weaponDefindex) {
+    navigateTo(`/knife/${getKnifeSlug(weaponDefindex)}`)
+  }
+}
+
+const navigateToActiveGlove = () => {
+  const activeGloveDefindex = selectedTeam.value === 2 ? activeGloves.value.gloves_t : activeGloves.value.gloves_ct
+  if (activeGloveDefindex) {
+    navigateTo(`/glove/${getGloveSlug(activeGloveDefindex)}`)
+  }
+}
 
 const getWeaponImage = (weaponId: number) => {
   const playerSkin = playerSkins.value.find(
