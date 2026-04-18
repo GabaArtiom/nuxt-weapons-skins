@@ -89,8 +89,8 @@ onBeforeUnmount(() => {
 
 .back-btn {
   position: sticky;
-  top: 5rem;
-  z-index: 30;
+  top: 6rem;
+  z-index: 50;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -102,13 +102,14 @@ onBeforeUnmount(() => {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(15, 23, 42, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .back-btn.is-scrolled {
