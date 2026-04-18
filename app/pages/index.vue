@@ -452,13 +452,10 @@ const gloveTypes = computed(() => {
 })
 
 const getKnifeImage = (weaponId: number) => {
-  const playerSkinT = playerSkins.value.find(
-    s => s.weapon_defindex === weaponId && s.weapon_team === 2
+  // Use selected team to get the correct knife skin
+  const playerSkin = playerSkins.value.find(
+    s => s.weapon_defindex === weaponId && s.weapon_team === selectedTeam.value
   )
-  const playerSkinCT = playerSkins.value.find(
-    s => s.weapon_defindex === weaponId && s.weapon_team === 3
-  )
-  const playerSkin = playerSkinT || playerSkinCT
 
   if (playerSkin && playerSkin.weapon_paint_id) {
     const selectedSkin = skins.value.find(
@@ -479,13 +476,10 @@ const getKnifeImage = (weaponId: number) => {
 }
 
 const getGloveImage = (weaponId: number) => {
-  const playerSkinT = playerSkins.value.find(
-    s => s.weapon_defindex === weaponId && s.weapon_team === 2
+  // Use selected team to get the correct glove skin
+  const playerSkin = playerSkins.value.find(
+    s => s.weapon_defindex === weaponId && s.weapon_team === selectedTeam.value
   )
-  const playerSkinCT = playerSkins.value.find(
-    s => s.weapon_defindex === weaponId && s.weapon_team === 3
-  )
-  const playerSkin = playerSkinT || playerSkinCT
 
   if (playerSkin && playerSkin.weapon_paint_id) {
     const selectedSkin = skins.value.find(
