@@ -65,92 +65,21 @@
           </div>
         </div>
 
-        <Transition name="modal">
-          <div v-if="showModal" class="modal-backdrop" @click.self="showModal = false">
-            <div class="modal" v-if="selectedSkin" :style="{ '--rarity-color': selectedSkin.rarity.color }">
-              <button class="modal__close" @click="showModal = false">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-
-              <div class="modal__head">
-                <div class="modal__rarity">
-                  <span class="modal__rarity-dot"></span>
-                  {{ selectedSkin.rarity.name }}
-                </div>
-                <h2 class="modal__title">{{ selectedSkin.name }}</h2>
-              </div>
-
-              <div class="modal__preview">
-                <div class="modal__preview-glow"></div>
-                <img :src="selectedSkin.image" :alt="selectedSkin.name" class="modal__preview-img" />
-                <div class="corner-brackets modal__preview-brackets"></div>
-              </div>
-
-              <div class="modal__body">
-                <FloatSlider
-                  v-model="floatValue"
-                  :min="selectedSkin.min_float"
-                  :max="selectedSkin.max_float"
-                />
-
-                <div class="input-group">
-                  <div class="input-group__head">
-                    <span class="input-group__label">Seed (Pattern)</span>
-                    <span class="input-group__value">{{ seedValue }}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1000"
-                    v-model.number="seedValue"
-                    class="seed-slider"
-                  />
-                </div>
-
-                <div class="input-group">
-                  <span class="input-group__label">Nametag</span>
-                  <input
-                    v-model="nametag"
-                    placeholder="Введите название"
-                    class="text-input"
-                  />
-                </div>
-
-                <div class="modal__actions" v-if="!isUpdatingCurrent">
-                  <button
-                    @click="saveSkinConfig(3)"
-                    :disabled="!!saving"
-                    class="team-btn team-btn--ct"
-                  >
-                    <span class="team-btn__badge">CT</span>
-                    <span>{{ saving === 3 ? 'Сохранение…' : 'Сохранить для CT' }}</span>
-                  </button>
-                  <button
-                    @click="saveSkinConfig(2)"
-                    :disabled="!!saving"
-                    class="team-btn team-btn--t"
-                  >
-                    <span class="team-btn__badge">T</span>
-                    <span>{{ saving === 2 ? 'Сохранение…' : 'Сохранить для T' }}</span>
-                  </button>
-                </div>
-
-                <div class="modal__actions modal__actions--single" v-else>
-                  <button
-                    @click="saveSkinConfig(selectedTeam)"
-                    :disabled="!!saving"
-                    class="team-btn team-btn--update"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"/>
-                    </svg>
-                    <span>{{ saving ? 'Обновление…' : 'Обновить скин' }}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Transition>
+        <SkinConfigModal
+          :show="showModal"
+          :skin="selectedSkin"
+          v-model:float-value="floatValue"
+          v-model:seed-value="seedValue"
+          v-model:nametag="nametag"
+          v-model:stat-trak="statTrak"
+          :show-stat-trak="false"
+          :show-nametag="false"
+          :is-updating="isUpdatingCurrent"
+          :current-team="selectedTeam"
+          :saving="saving"
+          @close="showModal = false"
+          @save="saveSkinConfig"
+        />
       </ClientOnly>
     </main>
   </div>

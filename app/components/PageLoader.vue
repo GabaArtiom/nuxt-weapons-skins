@@ -33,82 +33,93 @@ const crosshairContainer = ref<HTMLElement | null>(null)
 const crosshairSvg = ref<SVGElement | null>(null)
 const crosshairPath = ref<SVGPathElement | null>(null)
 const crosshairGlow = ref<HTMLElement | null>(null)
-const progressBar = ref<HTMLElement | null>(null)
 const curtainLeft = ref<HTMLElement | null>(null)
 const curtainRight = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   const tl = gsap.timeline()
 
-  // Crosshair container появляется с вращением
-  tl.from(crosshairContainer.value, {
-    scale: 0.3,
-    rotation: -360,
-    opacity: 0,
-    duration: 1,
-    ease: 'back.out(1.7)',
+  // Оптимизация: включаем аппаратное ускорение для SVG
+  gsap.set(crosshairContainer.value, {
+    force3D: true,
+    transformPerspective: 1000,
   })
 
-  // Рисуем путь прицела
+  // Crosshair container появляется с вращением (быстрее и плавнее)
+  tl.from(crosshairContainer.value, {
+    scale: 0.5,
+    rotation: -180,
+    opacity: 0,
+    duration: 0.6,
+    ease: 'back.out(1.4)',
+  })
+
+  // Рисуем путь прицела (оптимизировано)
   if (crosshairPath.value) {
     const pathLength = crosshairPath.value.getTotalLength()
     gsap.set(crosshairPath.value, {
       strokeDasharray: pathLength,
       strokeDashoffset: pathLength,
+      force3D: true,
     })
 
     tl.to(crosshairPath.value, {
       strokeDashoffset: 0,
-      duration: 1.5,
-      ease: 'power2.inOut',
-    }, '-=0.5')
+      duration: 0.8,
+      ease: 'power2.out',
+    }, '-=0.3')
   }
 
   // Пульсация свечения
   tl.to(crosshairGlow.value, {
-    scale: 1.2,
-    opacity: 0.8,
-    duration: 0.8,
+    scale: 1.15,
+    opacity: 0.7,
+    duration: 0.6,
     yoyo: true,
     repeat: -1,
     ease: 'sine.inOut',
-  }, '-=0.5')
+    force3D: true,
+  }, '-=0.2')
 
   // Пульсация самого прицела
   tl.to(crosshairSvg.value, {
-    scale: 1.05,
-    duration: 0.8,
+    scale: 1.03,
+    duration: 0.6,
     yoyo: true,
     repeat: -1,
     ease: 'sine.inOut',
+    force3D: true,
   }, '<')
 
-  // Закрытие через 2 секунды
+  // Закрытие через 1.5 секунды
   setTimeout(() => {
     // Fade out контента
     gsap.to('.loader-content', {
       opacity: 0,
       scale: 0.95,
-      duration: 0.5,
+      duration: 0.4,
       ease: 'power2.in',
+      force3D: true,
     })
 
     // Шторки разъезжаются
     gsap.to(curtainLeft.value, {
       x: '-100%',
-      duration: 0.8,
-      ease: 'back.in(1.2)',
+      duration: 0.6,
+      ease: 'power2.in',
+      force3D: true,
     })
 
     gsap.to(curtainRight.value, {
       x: '100%',
-      duration: 0.8,
-      ease: 'back.in(1.2)',
+      duration: 0.6,
+      ease: 'power2.in',
+      force3D: true,
       onComplete: () => {
         isLoading.value = false
       },
     })
-  }, 2000)
+  }, 1500)
 })
 </script>
 
