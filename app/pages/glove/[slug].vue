@@ -80,13 +80,6 @@
             @click="openCurrentSkinModal"
           />
         </div>
-
-        <div class="detail-filter glass">
-          <SkinFilter
-            v-model:search="searchQuery"
-            v-model:rarity="selectedRarity"
-          />
-        </div>
       </div>
 
       <ClientOnly>
