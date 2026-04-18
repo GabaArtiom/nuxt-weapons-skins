@@ -154,3 +154,49 @@ export function getWeaponCategory(defindex: number): string {
   }
   return 'other'
 }
+
+// Оружия доступные только для CT
+const CT_ONLY_WEAPONS = [
+  3,  // Five-SeveN
+  32, // P2000
+  61, // USP-S
+  10, // FAMAS
+  16, // M4A4
+  60, // M4A1-S
+  8,  // AUG
+  38, // SCAR-20
+  34, // MP9
+  27, // MAG-7
+]
+
+// Оружия доступные только для T
+const T_ONLY_WEAPONS = [
+  4,  // Glock-18
+  30, // Tec-9
+  7,  // AK-47
+  13, // Galil AR
+  39, // SG 553
+  11, // G3SG1
+  17, // MAC-10
+  29, // Sawed-Off
+]
+
+// Проверить, доступно ли оружие для команды
+export function isWeaponAvailableForTeam(defindex: number, team: 2 | 3): boolean {
+  // team 2 = T, team 3 = CT
+
+  if (team === 3) {
+    // CT: не показываем оружия только для T
+    return !T_ONLY_WEAPONS.includes(defindex)
+  } else {
+    // T: не показываем оружия только для CT
+    return !CT_ONLY_WEAPONS.includes(defindex)
+  }
+}
+
+// Получить список оружий доступных для команды
+export function getWeaponsForTeam(team: 2 | 3): number[] {
+  return Object.keys(WEAPON_MAP)
+    .map(id => parseInt(id))
+    .filter(id => isWeaponAvailableForTeam(id, team))
+}

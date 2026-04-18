@@ -363,7 +363,7 @@
 </template>
 
 <script setup lang="ts">
-import { WEAPON_MAP, getWeaponCategory, getDefaultWeaponImage, getWeaponSlug } from '~/utils/weapons'
+import { WEAPON_MAP, getWeaponCategory, getDefaultWeaponImage, getWeaponSlug, isWeaponAvailableForTeam } from '~/utils/weapons'
 import { getKnifeSlug } from '~/utils/knives'
 import { getGloveSlug } from '~/utils/gloves'
 import gsap from 'gsap'
@@ -434,6 +434,12 @@ const weaponsByCategory = computed(() => {
 
   for (const [id, name] of Object.entries(WEAPON_MAP)) {
     const weaponId = parseInt(id)
+
+    // Фильтруем оружия по доступности для выбранной команды
+    if (!isWeaponAvailableForTeam(weaponId, selectedTeam.value)) {
+      continue
+    }
+
     const category = getWeaponCategory(weaponId)
     if (result[category]) {
       result[category].push({ id: weaponId, name })
