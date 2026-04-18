@@ -240,6 +240,7 @@
                   :skin="activeKnifeSkin"
                   :player-skin="activeKnifePlayerSkin"
                   v-model:team="selectedTeam"
+                  :show-team-toggle="false"
                   @click="navigateToActiveKnife"
                 />
 
@@ -280,6 +281,7 @@
                   :skin="activeGloveSkin"
                   :player-skin="activeGlovePlayerSkin"
                   v-model:team="selectedTeam"
+                  :show-team-toggle="false"
                   @click="navigateToActiveGlove"
                 />
 

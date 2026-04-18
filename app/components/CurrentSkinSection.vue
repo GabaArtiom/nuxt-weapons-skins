@@ -1,7 +1,7 @@
 <template>
   <div class="current-skin-section">
     <div class="current-skin-wrapper">
-      <TeamToggle v-model="teamModel" />
+      <TeamToggle v-if="showTeamToggle" v-model="teamModel" />
 
       <CurrentSkinBlock
         :skin="skin"
@@ -16,11 +16,14 @@
 <script setup lang="ts">
 import type { Skin, PlayerSkin } from '~/utils/skins'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   skin: Skin | null
   playerSkin: PlayerSkin | null
   team: 2 | 3
-}>()
+  showTeamToggle?: boolean
+}>(), {
+  showTeamToggle: true
+})
 
 const emit = defineEmits<{
   'update:team': [value: 2 | 3]
