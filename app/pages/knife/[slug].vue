@@ -31,17 +31,12 @@
         v-model:rarity="selectedRarity"
       />
 
-      <div class="current-skin-section">
-        <div class="current-skin-wrapper">
-          <TeamToggle v-model="selectedTeam" />
-
-          <CurrentSkinBlock
-            :skin="currentSkin"
-            :player-skin="currentPlayerSkin"
-            @click="openCurrentSkinModal"
-          />
-        </div>
-      </div>
+      <CurrentSkinSection
+        :skin="currentSkin"
+        :player-skin="currentPlayerSkin"
+        v-model:team="selectedTeam"
+        @click="openCurrentSkinModal"
+      />
 
       <ClientOnly>
         <div v-if="loading" class="loading-wrap">
@@ -668,18 +663,6 @@ const saveSkinConfig = async (team: number) => {
 }
 
 /* Current Skin Section */
-.current-skin-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
-}
-
-.current-skin-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
 
 .modal-enter-active, .modal-leave-active { transition: opacity 0.3s; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
