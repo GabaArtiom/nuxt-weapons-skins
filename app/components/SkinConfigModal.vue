@@ -1,10 +1,11 @@
 <template>
-  <Transition name="modal">
-    <div v-if="show" class="modal-backdrop" @click.self="$emit('close')">
-      <div class="modal" v-if="skin" :style="{ '--rarity-color': skin.rarity.color }">
-        <button class="modal__close" @click="$emit('close')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
+  <Teleport to="body">
+    <Transition name="modal">
+      <div v-if="show" class="modal-backdrop" @click.self="$emit('close')">
+        <div class="modal" v-if="skin" :style="{ '--rarity-color': skin.rarity.color }">
+          <button class="modal__close" @click="$emit('close')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
 
         <div class="modal__head">
           <div class="modal__rarity">
@@ -93,6 +94,7 @@
       </div>
     </div>
   </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
