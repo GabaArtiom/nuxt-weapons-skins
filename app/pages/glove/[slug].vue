@@ -72,17 +72,7 @@
 
       <div class="current-skin-section">
         <div class="current-skin-wrapper">
-          <button @click="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
-            <div class="team-toggle__track">
-              <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
-              <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
-                <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
-              </div>
-              <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
-                <span class="team-toggle__badge team-toggle__badge--t">T</span>
-              </div>
-            </div>
-          </button>
+          <TeamToggle v-model="selectedTeam" />
 
           <div
             class="current-skin-block glass-card"

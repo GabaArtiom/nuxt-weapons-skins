@@ -117,17 +117,7 @@
                 <p class="section-head__sub">Ножи, перчатки или любая пушка — одним кликом.</p>
               </div>
 
-              <button @click="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
-                <div class="team-toggle__track">
-                  <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
-                  <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
-                    <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
-                  </div>
-                  <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
-                    <span class="team-toggle__badge team-toggle__badge--t">T</span>
-                  </div>
-                </div>
-              </button>
+              <TeamToggle v-model="selectedTeam" />
             </div>
 
             <!-- Knives & Gloves featured -->
@@ -240,17 +230,7 @@
                 <h1 class="section-head__title gradient-text-primary">{{ tabTitles[activeTab] }}</h1>
               </div>
 
-              <button @click="selectedTeam = selectedTeam === 2 ? 3 : 2" class="team-toggle">
-                <div class="team-toggle__track">
-                  <div class="team-toggle__slider" :class="{ 'team-toggle__slider--t': selectedTeam === 2 }"></div>
-                  <div class="team-toggle__option team-toggle__option--ct" :class="{ 'team-toggle__option--active': selectedTeam === 3 }">
-                    <span class="team-toggle__badge team-toggle__badge--ct">CT</span>
-                  </div>
-                  <div class="team-toggle__option team-toggle__option--t" :class="{ 'team-toggle__option--active': selectedTeam === 2 }">
-                    <span class="team-toggle__badge team-toggle__badge--t">T</span>
-                  </div>
-                </div>
-              </button>
+              <TeamToggle v-model="selectedTeam" />
             </div>
 
             <Transition name="tab-fade" mode="out-in">
