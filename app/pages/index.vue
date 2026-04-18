@@ -379,6 +379,10 @@ const tabTitles: Record<string, string> = {
   heavy: 'Тяжёлое оружие',
 }
 
+const onScroll = () => {
+  scrolled.value = window.scrollY > 12
+}
+
 onMounted(async () => {
   await fetchUser()
   await fetchSkins()
@@ -394,15 +398,12 @@ onMounted(async () => {
     }
   }
 
-  const onScroll = () => {
-    scrolled.value = window.scrollY > 12
-  }
   window.addEventListener('scroll', onScroll, { passive: true })
   onScroll()
+})
 
-  onBeforeUnmount(() => {
-    window.removeEventListener('scroll', onScroll)
-  })
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
 })
 
 const setActiveTab = (tab: string | null) => {
