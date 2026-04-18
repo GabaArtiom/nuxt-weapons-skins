@@ -1,10 +1,15 @@
 <template>
   <div
     class="current-skin-block glass-card"
-    :class="{ 'current-skin-block--clickable': skin }"
+    :class="{ 'current-skin-block--clickable': skin, 'current-skin-block--t': team === 2 }"
     :style="skin ? { '--rarity-color': skin.rarity.color } : {}"
     @click="skin && $emit('click')"
   >
+    <div class="current-skin-block__bg-icon">
+      <IconCT v-if="team === 3" class="bg-icon" />
+      <IconT v-if="team === 2" class="bg-icon" />
+    </div>
+
     <div v-if="skin" class="current-skin-content">
       <div class="current-skin-image">
         <img :src="skin.image" :alt="skin.name" />
@@ -55,6 +60,7 @@ interface PlayerSkin {
 defineProps<{
   skin?: Skin | null
   playerSkin?: PlayerSkin | null
+  team: 2 | 3
 }>()
 
 defineEmits<{
@@ -64,9 +70,39 @@ defineEmits<{
 
 <style scoped>
 .current-skin-block {
+  position: relative;
   padding: 2rem;
   border-radius: 18px;
   transition: all 0.3s;
+  overflow: hidden;
+}
+
+.current-skin-block__bg-icon {
+  position: absolute;
+  top: 50%;
+  right: -5%;
+  transform: translateY(-50%);
+  width: 320px;
+  height: 320px;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.current-skin-block--t .current-skin-block__bg-icon {
+  opacity: 0.1;
+}
+
+.bg-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.current-skin-block > :not(.current-skin-block__bg-icon) {
+  position: relative;
+  z-index: 1;
 }
 
 .current-skin-block--clickable {
