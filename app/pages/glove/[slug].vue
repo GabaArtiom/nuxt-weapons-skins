@@ -208,9 +208,8 @@ const gloveSkins = computed(() => {
 
 const currentPlayerSkin = computed(() => {
   if (!gloveId.value) return null
-  // Gloves are shared between teams, always use team 2 (T)
   return playerSkins.value.find(
-    ps => ps.weapon_defindex === gloveId.value && ps.weapon_team === 2
+    ps => ps.weapon_defindex === gloveId.value && ps.weapon_team === selectedTeam.value
   )
 })
 
@@ -284,7 +283,6 @@ const saveSkinConfig = async (team: number) => {
 
   saving.value = team
   try {
-    // Gloves are shared between teams, always save as team 2 (T)
     await saveSkin({
       weapon_defindex: gloveId.value,
       weapon_paint_id: parseInt(selectedSkin.value.paint_index),
@@ -292,7 +290,7 @@ const saveSkinConfig = async (team: number) => {
       weapon_seed: seedValue.value,
       weapon_nametag: nametag.value || null,
       weapon_stattrak: false,
-      weapon_team: 2,
+      weapon_team: team,
     })
   } finally {
     saving.value = false
