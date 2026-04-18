@@ -103,6 +103,19 @@
   transition: color 0.25s;
 }
 
+.team-toggle__icon {
+  width: 24px;
+  height: 24px;
+  transition: all 0.25s;
+}
+
+.team-toggle__icon svg,
+.team-toggle__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .team-toggle__option--active {
   color: #fff;
 }
