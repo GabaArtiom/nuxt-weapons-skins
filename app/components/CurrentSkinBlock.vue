@@ -79,11 +79,11 @@ defineEmits<{
 
 .current-skin-block__bg-icon {
   position: absolute;
-  top: 50%;
+  top: 80%;
   right: -5%;
   transform: translateY(-50%);
-  width: 320px;
-  height: 320px;
+  width: 200px;
+  height: 200px;
   opacity: 0.08;
   pointer-events: none;
   z-index: 0;
