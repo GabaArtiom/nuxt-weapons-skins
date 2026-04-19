@@ -83,8 +83,12 @@ onBeforeUnmount(() => {
   background: rgba(59, 130, 246, 0.12);
 }
 
-.back-btn:not(.is-scrolled):hover svg {
+.back-btn:hover svg {
   transform: translateX(-2px);
+}
+
+.back-btn.is-scrolled:hover svg {
+  transform: none;
 }
 
 .back-btn.is-scrolled:hover {
