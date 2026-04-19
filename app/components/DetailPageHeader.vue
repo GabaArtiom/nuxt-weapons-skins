@@ -1,25 +1,27 @@
 <template>
-  <div class="detail-head">
-    <div class="detail-head-left">
-      <NuxtLink :to="backUrl" class="back-btn" :class="{ 'is-scrolled': isScrolled }">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M11 18l-6-6 6-6"/>
-        </svg>
-        <span class="back-btn__text">{{ backText }}</span>
-      </NuxtLink>
+  <div>
+    <NuxtLink :to="backUrl" class="back-btn" :class="{ 'is-scrolled': isScrolled }">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M11 18l-6-6 6-6"/>
+      </svg>
+      <span class="back-btn__text">{{ backText }}</span>
+    </NuxtLink>
 
-      <div class="detail-title-wrap">
-        <div class="detail-eyebrow">
-          <span class="detail-eyebrow__dot"></span>
-          {{ eyebrow }}
+    <div class="detail-head">
+      <div class="detail-head-left">
+        <div class="detail-title-wrap">
+          <div class="detail-eyebrow">
+            <span class="detail-eyebrow__dot"></span>
+            {{ eyebrow }}
+          </div>
+          <h1 class="detail-title gradient-text-primary">{{ title }}</h1>
         </div>
-        <h1 class="detail-title gradient-text-primary">{{ title }}</h1>
       </div>
-    </div>
 
-    <div class="detail-head-actions">
-      <SearchBox v-model="searchModel" />
-      <RarityFilterDropdown v-if="showRarityFilter" v-model="rarityModel" />
+      <div class="detail-head-actions">
+        <SearchBox v-model="searchModel" />
+        <RarityFilterDropdown v-if="showRarityFilter" v-model="rarityModel" />
+      </div>
     </div>
   </div>
 </template>
@@ -72,12 +74,12 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  margin-top: 1.25rem;
 }
 
 .detail-head-left {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
 }
 
 .detail-head-actions {
@@ -156,7 +158,7 @@ onBeforeUnmount(() => {
 }
 
 .detail-title-wrap {
-  margin-top: 1.25rem;
+  /* margin-top removed since it's now on .detail-head */
 }
 
 .detail-eyebrow {
