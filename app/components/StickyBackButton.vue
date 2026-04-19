@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
   background: rgba(59, 130, 246, 0.12);
 }
 
-.back-btn:hover svg {
+.back-btn:not(.is-scrolled):hover svg {
   transform: translateX(-2px);
 }
 
@@ -92,9 +92,5 @@ onBeforeUnmount(() => {
   background: rgba(59, 130, 246, 0.2);
   border-color: rgba(96, 165, 250, 0.5);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-}
-
-.back-btn.is-scrolled:hover svg {
-  transform: translateX(0) !important;
 }
 </style>
