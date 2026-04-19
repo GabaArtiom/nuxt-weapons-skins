@@ -21,11 +21,11 @@
     </header>
 
     <main class="detail-main" :class="{ 'team-t': selectedTeam === 2 }">
+      <StickyBackButton back-url="/?tab=knives" back-text="Назад к ножам" />
+
       <DetailPageHeader
         :title="knifeName"
         eyebrow="Knife Skin Selection"
-        back-url="/?tab=knives"
-        back-text="Назад к ножам"
         :show-rarity-filter="false"
         v-model:search="searchQuery"
         v-model:rarity="selectedRarity"
