@@ -81,6 +81,7 @@ onBeforeUnmount(() => {
   color: #fff;
   border-color: rgba(96, 165, 250, 0.4);
   background: rgba(59, 130, 246, 0.12);
+  transform: translateX(-2px);
 }
 
 .back-btn:hover svg {
