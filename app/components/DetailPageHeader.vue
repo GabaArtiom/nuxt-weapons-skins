@@ -1,13 +1,15 @@
 <template>
   <div>
-    <Teleport to="body">
-      <NuxtLink :to="backUrl" class="back-btn" :class="{ 'is-scrolled': isScrolled }">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M11 18l-6-6 6-6"/>
-        </svg>
-        <span class="back-btn__text">{{ backText }}</span>
-      </NuxtLink>
-    </Teleport>
+    <ClientOnly>
+      <Teleport to="body">
+        <NuxtLink :to="backUrl" class="back-btn" :class="{ 'is-scrolled': isScrolled }">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M11 18l-6-6 6-6"/>
+          </svg>
+          <span class="back-btn__text">{{ backText }}</span>
+        </NuxtLink>
+      </Teleport>
+    </ClientOnly>
 
     <div class="detail-head">
       <div class="detail-head-left">
