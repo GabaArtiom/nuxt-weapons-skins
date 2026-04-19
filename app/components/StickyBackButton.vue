@@ -88,8 +88,9 @@ onBeforeUnmount(() => {
 }
 
 .back-btn.is-scrolled:hover {
-  transform: translateX(-45px);
+  transform: translateX(-50px) translateY(-3px);
   background: rgba(59, 130, 246, 0.2);
   border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 </style>
