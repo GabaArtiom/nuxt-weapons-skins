@@ -56,11 +56,6 @@ onBeforeUnmount(() => {
 
 .back-btn.is-scrolled {
   transform: translateX(-50px);
-  padding: 0.65rem 0.75rem;
-  border-radius: 50%;
-  background: rgba(15, 23, 42, 0.9);
-  border-color: rgba(96, 165, 250, 0.3);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(96, 165, 250, 0.2) inset;
 }
 
 .back-btn.is-scrolled .back-btn__text {
