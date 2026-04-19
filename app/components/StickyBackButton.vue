@@ -56,7 +56,7 @@ onBeforeUnmount(() => {
 
 .back-btn.is-scrolled {
   transform: translateX(-50px);
-  gap: 0;
+  gap: 0 !important;
 }
 
 .back-btn.is-scrolled .back-btn__text {
@@ -95,6 +95,6 @@ onBeforeUnmount(() => {
 }
 
 .back-btn.is-scrolled:hover svg {
-  transform: translateX(0);
+  transform: translateX(0) !important;
 }
 </style>
