@@ -168,6 +168,20 @@ const statTrakModel = computed({
 })
 
 const showFullscreen = ref(false)
+
+const handleEscape = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && showFullscreen.value) {
+    showFullscreen.value = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleEscape)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleEscape)
+})
 </script>
 
 <style scoped>
@@ -341,8 +355,8 @@ const showFullscreen = ref(false)
 }
 
 .fullscreen__img {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 95%;
+  max-height: 95%;
   object-fit: contain;
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
 }
