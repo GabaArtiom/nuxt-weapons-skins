@@ -15,10 +15,16 @@
           <h2 class="modal__title">{{ skin.name }}</h2>
         </div>
 
-        <div class="modal__preview">
+        <div class="modal__preview" @click="showFullscreen = true">
           <div class="modal__preview-glow"></div>
           <img :src="skin.image" :alt="skin.name" class="modal__preview-img" />
           <div class="corner-brackets modal__preview-brackets"></div>
+          <div class="modal__preview-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+            </svg>
+            <span>Нажми для увеличения</span>
+          </div>
         </div>
 
         <div class="modal__body">
@@ -94,6 +100,18 @@
       </div>
     </div>
   </Transition>
+
+  <!-- Fullscreen Image Viewer -->
+  <Transition name="fullscreen">
+    <div v-if="showFullscreen" class="fullscreen-backdrop" @click="showFullscreen = false">
+      <button class="fullscreen__close" @click="showFullscreen = false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <img :src="skin?.image" :alt="skin?.name" class="fullscreen__img" @click.stop />
+    </div>
+  </Transition>
 </Teleport>
 </template>
 
@@ -148,6 +166,8 @@ const statTrakModel = computed({
   get: () => props.statTrak,
   set: (value) => emit('update:statTrak', value)
 })
+
+const showFullscreen = ref(false)
 </script>
 
 <style scoped>
@@ -225,6 +245,18 @@ const statTrakModel = computed({
     linear-gradient(180deg, rgba(15, 23, 42, 0.6), rgba(10, 15, 31, 0.5));
   border: 1px solid rgba(255, 255, 255, 0.05);
   min-height: 180px; overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal__preview:hover {
+  border-color: rgba(96, 165, 250, 0.3);
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, color-mix(in srgb, var(--rarity-color) 30%, transparent), transparent 70%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.7), rgba(10, 15, 31, 0.6));
+}
+
+.modal__preview:hover .modal__preview-hint {
+  opacity: 1;
 }
 
 .modal__preview-glow {
@@ -240,6 +272,101 @@ const statTrakModel = computed({
 }
 
 .modal__preview-brackets { color: var(--rarity-color); }
+
+.modal__preview-hint {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.modal__preview-hint svg {
+  width: 14px;
+  height: 14px;
+  color: #60A5FA;
+}
+
+.fullscreen-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.fullscreen__close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 3;
+}
+
+.fullscreen__close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.fullscreen__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fullscreen__img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
+}
+
+.fullscreen-enter-active,
+.fullscreen-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fullscreen-enter-from,
+.fullscreen-leave-to {
+  opacity: 0;
+}
+
+.fullscreen-enter-active .fullscreen__img,
+.fullscreen-leave-active .fullscreen__img {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fullscreen-enter-from .fullscreen__img,
+.fullscreen-leave-to .fullscreen__img {
+  transform: scale(0.9);
+  opacity: 0;
+}
 
 .modal__body {
   padding: 1.25rem 2rem 2rem;
