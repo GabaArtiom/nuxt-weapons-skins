@@ -355,8 +355,8 @@ onBeforeUnmount(() => {
 }
 
 .fullscreen__img {
-  max-width: 95%;
-  max-height: 95%;
+  max-width: 98%;
+  max-height: 98%;
   object-fit: contain;
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
 }
