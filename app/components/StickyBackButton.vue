@@ -56,6 +56,7 @@ onBeforeUnmount(() => {
 
 .back-btn.is-scrolled {
   transform: translateX(-50px);
+  gap: 0;
 }
 
 .back-btn.is-scrolled .back-btn__text {
