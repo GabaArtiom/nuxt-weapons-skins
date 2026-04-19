@@ -272,22 +272,6 @@ const saveSkinConfig = async (team: number) => {
 .detail-head { margin-bottom: 2.5rem; }
 .detail-title-wrap { margin-top: 1.25rem; }
 
-.back-btn {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  width: fit-content;
-  padding: 0.5rem 0.9rem; border-radius: 10px;
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--color-text-secondary);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  text-decoration: none; transition: all 0.25s ease;
-}
-.back-btn svg { width: 14px; height: 14px; }
-.back-btn:hover {
-  color: #fff; border-color: rgba(96, 165, 250, 0.4);
-  background: rgba(59, 130, 246, 0.12); transform: translateX(-2px);
-}
-
 .detail-eyebrow {
   display: inline-flex; align-items: center; gap: 0.6rem;
   font-size: 0.72rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
